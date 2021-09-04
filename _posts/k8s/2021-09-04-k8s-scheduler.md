@@ -1,13 +1,13 @@
 ---
 layout: post
 title: K8S调度器研究
+toc: true
 subtitle: kube-scheduler初探
 cover-img: /assets/img/path.jpg
 thumbnail-img: /assets/img/thumb.png
 share-img: /assets/img/path.jpg
 tags: [k8s, scheduler]
 lang: zh
-toc: true
 ---
 
 ```shell
@@ -17,7 +17,7 @@ echo "Hello world! ABCS"
 ```java
 public static class Hello {
     public static void main() {
-        System.out.println("Hello world!");
+        System.out.println("Hello world, abc!");
     }
 }
 ```
