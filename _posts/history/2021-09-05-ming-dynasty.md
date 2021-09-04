@@ -1,36 +1,22 @@
 ---
 layout: post
-title: K8S调度器研究
+title: 明朝那些事儿
 subtitle: kube-scheduler初探
 cover-img: /assets/img/path.jpg
 thumbnail-img: /assets/img/thumb.png
 share-img: /assets/img/path.jpg
 tags: [k8s, scheduler]
 lang: zh
-toc: true
 ---
 
 ```shell
-echo "Hello world! ABCS"
-```
-
-```java
-public static class Hello {
-    public static void main() {
-        System.out.println("Hello world!");
-    }
-}
+echo "Hello world"
 ```
 
 > 苟利国家生死以
 > 岂因祸福避趋之。<br>
 > One should uphold his country’s interest with his life, he should not do things just to pursue his personal gains and he should not be evade responsibilities for fear of personal loss.
 
-# Hello
-
-## Hello 2
-
-# Title 3
 Under what circumstances should we step off a path? When is it essential that we finish what we start? If I bought a bag of peanuts and had an allergic reaction, no one would fault me if I threw it out. If I ended a relationship with a woman who hit me, no one would say that I had a commitment problem. But if I walk away from a seemingly secure route because my soul has other ideas, I am a flake?
 
 The truth is that no one else can definitively know the path we are here to walk. It’s tempting to listen—many of us long for the omnipotent other—but unless they are genuine psychic intuitives, they can’t know. All others can know is their own truth, and if they’ve actually done the work to excavate it, they will have the good sense to know that they cannot genuinely know anyone else’s. Only soul knows the path it is here to walk. Since you are the only one living in your temple, only you can know its scriptures and interpretive structure.

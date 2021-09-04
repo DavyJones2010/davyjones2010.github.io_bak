@@ -42,6 +42,9 @@ GEM
       sass (~> 3.4)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
+    jekyll-toc (0.17.1)
+      jekyll (>= 3.9)
+      nokogiri (~> 1.11)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     kramdown (2.3.1)
@@ -53,9 +56,12 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.3.6)
+    nokogiri (1.12.4-x86_64-darwin)
+      racc (~> 1.4)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (4.0.6)
+    racc (1.5.2)
     rake (12.3.3)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
@@ -76,6 +82,7 @@ PLATFORMS
 DEPENDENCIES
   beautiful-jekyll-theme!
   bundler (>= 1.16)
+  jekyll-toc
   rake (~> 12.0)
   webrick (~> 1.7)
 
