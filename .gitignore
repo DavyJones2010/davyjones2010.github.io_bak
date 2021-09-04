@@ -1,2 +1,6 @@
-# Default ignored files
-/.idea
+_site
+.idea
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
