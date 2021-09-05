@@ -14,11 +14,11 @@ author: Davy Walker
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  About Me: "aboutme"
   Archives: "archives"
+  About Me: "aboutme"
   Resources:
     - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://davyjones2010.github.io"
+  Git: "https://github.com/DavyJones2010/davyjones2010.github.io"
 
 # --- Logo --- #
 
