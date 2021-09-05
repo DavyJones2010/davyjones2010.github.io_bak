@@ -82,6 +82,8 @@ PLATFORMS
 DEPENDENCIES
   beautiful-jekyll-theme!
   bundler (>= 1.16)
+  jekyll
+  jekyll-sitemap
   jekyll-toc
   rake (~> 12.0)
   webrick (~> 1.7)

@@ -1,6 +1,7 @@
 ---
 layout: post
-title: Jekyll+GitHubPages搭建博客总结
+title: Jekyll搭建博客总结
+date: 2021-09-05 20:05:23 +0800
 tags: [jekyll]
 comments: true
 ---
@@ -10,10 +11,16 @@ comments: true
 * 二来，有幸同道中人看到，加以指正与讨论，更是妙哉！
 
 # 常用命令
-* 启动本地服务
+- 启动本地服务
 ```shell
 bundle exec jekyll serve --draft
 ```
+
+- 编译，生成_site目录
+```shell
+bundle exec jekyll build
+```
+
 
 # 踩坑记录
 ## 时区问题导致文章不可见
@@ -31,8 +38,25 @@ bundle exec jekyll serve --draft
 ![2021-09-05-jekyll-site-timezone-config-yaml.png](../assets/img/2021-09-05-jekyll-site-timezone-config-yaml.png)
 
 # 疑问
-* 同一天的文章，如何进行先后排序？
-* 如何把博客进行分类？
+## 同一天的文章，如何进行先后排序？
+---
+使用front-matter里的date就可以，date可以具体到时、分、秒。精确到时分秒，会自动按照时分秒排序。
+
+
+## 如何把博客进行Archive？
+***
+- 参见： [How to group posts by date on home page in Jekyll?](https://stackoverflow.com/questions/18669143/how-to-group-posts-by-date-on-home-page-in-jekyll)
+- 日期格式要修改下，日期格式参见 [Date formatting](https://learn.cloudcannon.com/jekyll/date-formatting/)，按照我个人习惯，修改成：`'%Y-%m-%d'`
+
+## 如何把博客进行一级标题分类？
+---
+
+
+## 如何为anchor增加可点击链接？
+---
+
+## 如何自动生成front-matter的date？
+---
 
 # 吐槽
 * 生成TOC，花太多功夫了，并且即使做出来，也丑出天际，羡慕别人这种浮动的
