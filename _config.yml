@@ -16,7 +16,6 @@ author: Davy Walker
 navbar-links:
   About Me: "aboutme"
   Resources:
-    - Beautiful Jekyll: "https://davyjones2010.github.io/"
     - Learn markdown: "https://www.markdowntutorial.com/"
   Author's home: "https://davyjones2010.github.io"
 
@@ -189,7 +188,7 @@ date_format: "%B %-d, %Y"
 # --- You don't need to touch anything below here (but you can if you want) --- #
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Toronto"
+timezone: "Asia/Shanghai"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/
