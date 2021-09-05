@@ -1,0 +1,65 @@
+/*
+ * cwTeXMing (Chinese Traditional) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+  font-family: 'cwTeXMing';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXMing-zhonly.eot);
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXMing-zhonly-iefix.eot) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXMing-zhonly.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXMing-zhonly.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXMing-zhonly.ttf) format('truetype');
+}
+/*
+ * cwTeXKai (Chinese Traditional) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+  font-family: 'cwTeXKai';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXKai-zhonly.eot);
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXKai-zhonly-iefix.eot) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXKai-zhonly.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXKai-zhonly.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXKai-zhonly.ttf) format('truetype');
+}
+
+/*
+ * cwTeXHei (Chinese-traditional) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+  font-family: 'cwTeXHei';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXHei-zhonly.eot);
+  src: url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXHei-zhonly-iefix.eot) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXHei-zhonly.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXHei-zhonly.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/cwtexkai/v3/cwTeXHei-zhonly.ttf) format('truetype');
+}
+/*
+ * cwTeXFangSong (Chinese Traditional) http://www.google.com/fonts/earlyaccess
+ */
+@font-face {
+    font-family: 'cwTeXFangSong';
+    font-style: normal;
+    font-weight: 500;
+    src: url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.eot);
+    src: url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.eot?#iefix) format('embedded-opentype'),
+    url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/cwtexfangsong/v3/cwTeXFangSong-zhonly.ttf) format('truetype');
+}
+
+@font-face {
+    /*圓體*/
+    font-family: 'cwTeXYen';
+    font-style: normal;
+    font-weight: 500;
+    src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+    src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+    url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+    url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+    url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
+}

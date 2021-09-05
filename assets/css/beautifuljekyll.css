@@ -21,6 +21,21 @@ body {
   background-attachment: fixed;
   {% endif %}
 }
+
+/* chinese */
+/*
+h1, h2, h1 a, h2 a:lang(zh) {
+  font-family: "PT Sans", "cwTeXFangSong", serif;
+}
+h3, h4, h5, h6, p, table, img, a:lang(zh) {
+  font-family: "PT Sans", "cwTeXFangSong", "Microsoft YaHei", sans-serif;
+}
+blockquote p:lang(zh){
+  font-family: "PT Sans", "STKaiti", "Kaiti", "cwTeXKai", "Microsoft YaHei", sans-serif;
+}
+*/
+
+
 p {
   line-height: 1.5;
   margin: 1.875rem 0;
