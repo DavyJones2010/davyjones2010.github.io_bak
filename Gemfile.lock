@@ -85,6 +85,7 @@ DEPENDENCIES
   beautiful-jekyll-theme!
   bundler (>= 1.16)
   jekyll
+  jekyll-sass-converter
   jekyll-seo-tag
   jekyll-sitemap
   jekyll-toc

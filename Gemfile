@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 gem 'jekyll'
 gem 'jekyll-seo-tag'
+gem 'jekyll-sass-converter'
 
 group :jekyll_plugins do
     gem "webrick", "~> 1.7"

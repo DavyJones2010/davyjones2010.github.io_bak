@@ -1,9 +1,7 @@
 ---
 layout: base
 ---
-
 {% include header.html type="post" %}
-{% include toc.html html=content %}
 
 <div class="{% if page.full-width %} container-fluid {% else %} container-md {% endif %}">
   <div class="row">
@@ -41,7 +39,8 @@ layout: base
       {% endif %}
 
       <article role="main" class="blog-post">
-        {{ content }}
+        {% include toc.html html=content %}
+        {% include anchor_headings.html html=content anchorBody="#" beforeHeading=true sanitize=true class="inline_toc" %}
       </article>
 
       {% if page.tags.size > 0 %}

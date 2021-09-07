@@ -8,6 +8,8 @@ tags: [jekyll]
 * 一来，作为自己备忘，如此之多的知识，如果不加以梳理，在脑海里始终就是分散的点。
 * 二来，有幸同道中人看到，加以指正与讨论，更是妙哉！
 
+---
+
 # 常用命令
 - 启动本地服务
 ```shell
@@ -24,6 +26,16 @@ bundle exec jekyll build
 bundle install
 ```
 
+---
+
+# 使用的插件
+- [Beautiful Jekyll](https://beautifuljekyll.com/): beautiful-jekyll主题
+- [jekyll-toc](https://github.com/allejo/jekyll-toc)：方便增加toc，虽然有点丑
+- [jekyll-anchor-headings](https://github.com/allejo/jekyll-anchor-headings)：方便给标题增加anchor链接，虽然也有点丑，😅
+- [font-awesome](http://www.fontawesome.com.cn/icons/list/): 无须重新安装， 默认beautiful-jekyll里包含了
+
+---
+
 # 踩坑记录
 ## 时区问题导致文章不可见
 ### 问题描述
@@ -39,10 +51,12 @@ bundle install
 如下图，修改`_config.yaml`文件中`timezone`配置即可，修改成`Asia/Shanghai`
 ![2021-09-05-jekyll-site-timezone-config-yaml.png](../assets/img/2021-09-05-jekyll-site-timezone-config-yaml.png)
 
+---
+
 # 疑问
 ## 同一天的文章，如何进行先后排序？
 ---
-使用front-matter里的date就可以，date可以具体到时、分、秒。精确到时分秒，会自动按照时分秒排序。
+- 使用front-matter里的date就可以，date可以具体到时、分、秒。精确到时分秒，会自动按照时分秒排序。
 
 
 ## 如何把博客进行Archive？
@@ -55,14 +69,16 @@ bundle install
 
 
 ## 如何为anchor增加可点击链接？
+- 使用 [jekyll-anchor-headings](https://github.com/allejo/jekyll-anchor-headings) 插件
+
 ---
 
 ## 如何自动生成front-matter的date？
 ---
 
 # 吐槽
-* 生成TOC，花太多功夫了，并且即使做出来，也丑出天际，羡慕别人这种浮动的
-* 插入图片也不太方便了。
+* 生成TOC，花太多功夫了，并且即使做出来，也丑出天际，羡慕别人这种浮动的，后续经过调研发现，jekyll支持bootstrap，使用bootstrap的默认就好。
+* 插入图片也不太方便了。能自动把图片放在单独folder中，并自动生成图片的id该多好
 * 中文字体太丑了，大小也不合适，找时间修改下字体。
 
 慢慢来吧，一点点建设起来。

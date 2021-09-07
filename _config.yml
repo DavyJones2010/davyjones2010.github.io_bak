@@ -28,6 +28,8 @@ avatar: "/assets/img/avatar-icon.png"
 
 # By default, the image is cut into a circle. You can disable this behaviour by setting 'round-avatar: false'
 round-avatar: true
+sass:
+  style: compressed
 
 # If you want to have an image logo in the top-left corner instead of having the title of the website,
 # then specify the following parameter
