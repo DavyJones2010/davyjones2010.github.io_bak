@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gemspec
-gem 'jekyll'
+gem "jekyll", "~> 4.0.0"
 gem 'jekyll-seo-tag'
 gem 'jekyll-sass-converter'
 
