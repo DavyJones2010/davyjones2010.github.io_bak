@@ -1,5 +1,6 @@
 ---
 ---
+@import 'variables';
 
 .scroll-nav__list, .scroll-nav__sub-list {
   margin: 0;
@@ -7,6 +8,8 @@
   list-style-type: none;
   line-height: 20px;
 }
+
+
 
 .scroll-nav__item {
   margin-bottom: 5px;

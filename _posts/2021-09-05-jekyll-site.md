@@ -76,6 +76,11 @@ bundle install
 ## 如何自动生成front-matter的date？
 ---
 
+# 一些酷炫优秀的网站
+<i class="fas fa-code"> [lei1025](https://lei1025.github.io/posts/)</i>
+
+--- 
+
 # 吐槽
 * 生成TOC，花太多功夫了，并且即使做出来，也丑出天际，羡慕别人这种浮动的，后续经过调研发现，jekyll支持bootstrap，使用bootstrap的默认就好。
 * 插入图片也不太方便了。能自动把图片放在单独folder中，并自动生成图片的id该多好
