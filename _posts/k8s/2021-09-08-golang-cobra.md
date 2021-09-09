@@ -35,32 +35,32 @@ go build -o spot-tool
 
 - 增加子命令
 ```shell
-# 增加子命令
+增加子命令
 cobra add runInstances
-# 执行子命令 ./rootCmd subCmd params
+执行子命令 ./rootCmd subCmd params
 ./spot-tool runInstances 10 11 12 13 14
 ```
 
 - 增加孙命令
 ```shell
-# 增加子命令
+增加子命令
 cobra add subRunInstances
 
-# 修改subRunIntances.go的init
+修改subRunIntances.go的init
 - rootCmd.AddCommand(subRunInstancesCmd) 
 + runInstancesCmd.AddCommand(subRunInstancesCmd) 
 
-# 执行孙命令
+执行孙命令
 ./spot-tool runInstances subRunIntances params
 ```
 
 
 - 为命令增加flag
 ```shell
-# 子命令init中增加标识 
+子命令init中增加标识 
 runInstancesCmd.Flags().BoolP("float", "f", false, "Add Floating Numbers")
 
-# Run: func 中增加识别该标识的逻辑
+Run: func 中增加识别该标识的逻辑
 fstatus, _ := cmd.Flags().GetBool("float")
 if fstatus {
     floatAdd(args)
