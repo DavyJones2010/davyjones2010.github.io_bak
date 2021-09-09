@@ -18,8 +18,10 @@ runInstances --region cn-beijing --zone cn-beijing-h --instanceType ecs.c5.large
 
 
 # cobra
+## 参考文档
 [在 Golang 中使用 Cobra 创建 CLI 应用](https://www.qikqiak.com/post/create-cli-app-with-cobra/)
-常用命令
+
+## 常用命令
 
 - 初始化cobra CLI应用脚手架
 ```shell
