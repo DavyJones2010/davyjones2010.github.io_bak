@@ -15,6 +15,7 @@ runInstances --region cn-beijing --zone cn-beijing-h --instanceType ecs.c5.large
 
 - 创建go版本 [Preemptive Instance Recommendation CLI](https://github.com/aliyun/alibabacloud-ecs-easy-sdk/tree/master/incubator-plugins/preemptive-instance-recommendation)
 
+- 创建&部署[spot-interruption-handler](https://github.com/kube-aws/kube-spot-termination-notice-handler)
 
 
 # cobra
@@ -23,43 +24,52 @@ runInstances --region cn-beijing --zone cn-beijing-h --instanceType ecs.c5.large
 
 ## 常用命令
 
-- 初始化cobra CLI应用脚手架
+### 初始化cobra CLI应用脚手架
 ```shell
 cobra init --pkg-name spot-tool
 ```
 
-- 编译二进制
+### 编译二进制
 ```shell
 go build -o spot-tool
 ```
 
-- 增加子命令
+### 增加子命令
 ```shell
 增加子命令
 cobra add runInstances
+```
+
+```shell
 执行子命令 ./rootCmd subCmd params
 ./spot-tool runInstances 10 11 12 13 14
 ```
 
-- 增加孙命令
+### 增加孙命令
 ```shell
 增加子命令
 cobra add subRunInstances
+```
 
+```shell
 修改subRunIntances.go的init
 rootCmd.AddCommand(subRunInstancesCmd) 改成
 runInstancesCmd.AddCommand(subRunInstancesCmd) 
+```
 
+```shell
 执行孙命令
 ./spot-tool runInstances subRunIntances params
 ```
 
 
-- 为命令增加flag
+### 为命令增加flag
 ```shell
 子命令init中增加标识 
 runInstancesCmd.Flags().BoolP("float", "f", false, "Add Floating Numbers")
+```
 
+```shell
 Run: func 中增加识别该标识的逻辑
 fstatus, _ := cmd.Flags().GetBool("float")
 if fstatus {
@@ -69,5 +79,6 @@ if fstatus {
 }
 ```
 
+### k8s中如何使用cobra
 
 
