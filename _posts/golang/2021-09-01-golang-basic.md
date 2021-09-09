@@ -94,6 +94,45 @@ defer func() {
 }()
 ~~~
 
+---
+- 如何快速赋值?
+例如: 
+~~~
+flavor, _ := cmd.Flags().GetString("flavor")
+request.InstanceType = flavor
+~~~
+怎么样能变成一行? 
+~~~
+// 如下有编译错误, 怎么消除编译错误? 
+request.InstanceType = cmd.Flags().GetString("flavor")
+~~~
+
+
+- 如何快速给结构体中部分field赋值? 
+例如: 
+~~~
+request := ecs.CreateRunInstancesRequest()
+request.RegionId = region
+request.ZoneId = zone
+request.InstanceType = flavor
+request.InstanceChargeType = payType
+~~~
+怎样才能快速变成例如:
+~~~
+request {
+    RegionId = region
+    ZoneId = zone
+    InstanceType = flavor
+    InstanceChargeType = payType
+}
+~~~
+
+
+
+
+- 
+
+---
 # 感悟&吐槽
 - 函数可以返回多值, 太爽啦, 可以用匿名变量来屏蔽不需要的字段, 节省内存
 - 不显式声明类之间的继承关系, 实现关系, 代码看起来困难很多? 有没有更简便的方式?
