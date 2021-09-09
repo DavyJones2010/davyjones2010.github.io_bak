@@ -47,8 +47,8 @@ cobra add runInstances
 cobra add subRunInstances
 
 修改subRunIntances.go的init
-- rootCmd.AddCommand(subRunInstancesCmd) 
-+ runInstancesCmd.AddCommand(subRunInstancesCmd) 
+rootCmd.AddCommand(subRunInstancesCmd) 改成
+runInstancesCmd.AddCommand(subRunInstancesCmd) 
 
 执行孙命令
 ./spot-tool runInstances subRunIntances params
