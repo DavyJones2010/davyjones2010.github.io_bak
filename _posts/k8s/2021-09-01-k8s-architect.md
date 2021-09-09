@@ -23,7 +23,14 @@ lang: zh
   * CDR的Controller
   * AdmissionController 
   * 等
-    
+
+
+## 资源分为两类
+* Cluster-scoped resources
+    * 如node
+* Namespace-scoped resources
+    * 如pod
+
 
 ## 基础流程
 
