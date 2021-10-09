@@ -4,6 +4,7 @@ title: 一个简单的Fork&Join框架实现
 subtitle: 一个基于CompletionService实现的简单有效的Fork&Join框架
 gh-badge: [star, fork, follow]
 tags: [code-snippets, concurrent]
+full-width: true
 ---
 
 # 背景
