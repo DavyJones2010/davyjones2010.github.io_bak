@@ -14,18 +14,267 @@ tags: [code-snippets, concurrent]
 
 ## countdown latch
 
+```java
+package davyjones2010.github.io.concurrent;
+
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.junit.Test;
+
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.CORE_SIZE;
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.POOL_NAME;
+
+public class CustomForkJoinServiceTest {
+    @Test
+    public void countDownLatchTest() {
+        // 1. 创建线程池
+        ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE, 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingDeque<>(), new BasicThreadFactory.Builder().namingPattern(POOL_NAME + "-%d").build());
+        final List<String> validStrs = Lists.newCopyOnWriteArrayList();
+
+        // 2. 创建&提交任务
+        long start = System.currentTimeMillis();
+        final CountDownLatch latch = new CountDownLatch(40);
+        for (int i = 0; i < 40; i++) {
+            String str = "hello-" + i;
+            executorService.submit(() -> {
+                try {
+                    Task t = new Task();
+                    if (t.isValid(str)) {
+                        validStrs.add(str);
+                    }
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        try {
+            latch.await(100, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.printf("countDownLatchTest finished. validStrs: %s cost: %d \n", validStrs,
+            System.currentTimeMillis() - start);
+    }
+
+    public static class Task {
+        public Boolean isValid(String str) {
+            long start = System.currentTimeMillis();
+            // 这里模拟耗时操作
+            try {
+                long l = (long)(Math.random() * 1000);
+                Thread.sleep(l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("echo finished. cost: %d \n", System.currentTimeMillis() - start);
+            if (Integer.parseInt(Splitter.on('-').splitToList(str).get(1)) % 7 == 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+}
+```
+- 优点:
+  - 实现很简单
+  - 很容易实现超时机制, 防止木桶效应造成过大影响(如上边例子, 最大100s返回)
+- 缺点: 
+  - 必须使用一个线程安全的容器来保存每个任务分片的结果(如上边例子的CopyOnWriteArrayList), 如果使用线程不安全的容器例如HashMap, ArrayList, 很容易造成问题, 所以编码很容易踩坑.
+    - 例如如果不使用CopyOnWriteArrayList, 而使用ArrayList, 并发add, 会造成[IndexOutOfBoundsException](https://blogs.sap.com/2017/03/04/arraylist-in-multi-thread-context/)
+    - 例如如果不使用ConcurrentHashMap, 而使用HashMap, 并发add, 会造成[InfinityLoop](https://www.pixelstech.net/article/1585457836-Why-accessing-Java-HashMap-may-cause-infinite-loop-in-concurrent-environment)
+  - 由于使用了共享容器, 在线程竞争激烈的情况下, 效率必然会受到影响
+  - 通常是需要在需要多线程的类里来管理线程池(ExecutorService), 因此造成线程池遍地飞的场景, 不好几种管理.
+
 ## future.get
+```java
+package davyjones2010.github.io.concurrent;
+
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.junit.Test;
+
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.CORE_SIZE;
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.POOL_NAME;
+
+public class CustomForkJoinServiceTest {
+    @Test
+    public void futureTest() {
+        // 1. 创建线程池
+        ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE, 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingDeque<>(), new BasicThreadFactory.Builder().namingPattern(POOL_NAME + "-%d").build());
+
+        // 2. 创建&提交任务
+        long start = System.currentTimeMillis();
+        List<Future<Boolean>> futures = Lists.newArrayList();
+        for (int i = 0; i < 40; i++) {
+            String str = "hello-" + i;
+            Future<Boolean> submit = executorService.submit(() -> {
+                try {
+                    Task t = new Task();
+                    if (t.isValid(str)) {
+                        return true;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return false;
+            });
+            futures.add(submit);
+        }
+        for (Future<Boolean> future : futures) {
+            try {
+                Boolean aBoolean = future.get();
+                System.out.println("" + aBoolean);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("skipped.");
+            }
+        }
+        System.out.printf("futureTest finished. cost: %d \n",
+            System.currentTimeMillis() - start);
+    }
+
+    public static class Task {
+        public Boolean isValid(String str) {
+            long start = System.currentTimeMillis();
+            // 这里模拟耗时操作
+            try {
+                long l = (long)(Math.random() * 10000);
+                Thread.sleep(l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("echo finished. cost: %d \n", System.currentTimeMillis() - start);
+            if (Integer.parseInt(Splitter.on('-').splitToList(str).get(1)) % 7 == 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+}
+```
+
+- 优点:
+  - 实现很简单快捷
+- 缺点:
+  - 效率不如countdownlatch方式, 由于最终结果还是串行通过future.get拿到的. 如果前边几个future.get耗时很久(或者超时), 那么很容易造成方法瓶颈. 
+  - 不太容易实现部分成功, 返回部分成功结果
+  - 返回结果需要封装: 如上边例子, 很难知道哪个String是valid的, 必须再对结果进行一层封装, 这样增加了实现的复杂度.
 
 ## java原生的fork&join框架
+```java
+// TODO: 待补充
+```
 
 ## CompletionService
+```java
+package davyjones2010.github.io.concurrent;
+
+import java.util.List;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.junit.Test;
+
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.CORE_SIZE;
+import static davyjones2010.github.io.concurrent.CustomForkJoinService.POOL_NAME;
+
+public class CustomForkJoinServiceTest {
+    @Test
+    public void completionServiceTest() {
+        // 1. 创建线程池
+        ExecutorService executorService = new ThreadPoolExecutor(CORE_SIZE, CORE_SIZE, 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingDeque<>(), new BasicThreadFactory.Builder().namingPattern(POOL_NAME + "-%d").build());
+        CompletionService<Boolean> completionService =
+            new ExecutorCompletionService<>(executorService);
+
+        // 2. 创建&提交任务
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 40; i++) {
+            String str = "hello-" + i;
+            completionService.submit(() -> {
+                Task t = new Task();
+                if (t.isValid(str)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+        for (int i = 0; i < 40; i++) {
+            try {
+                Future<Boolean> take = completionService.take();
+                Boolean isValid = take.get();
+                // 这里丢失了上下文, 不知道当前get到的是for哪个String的
+                System.out.println("isValid " + isValid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.printf("completionServiceTest finished. cost: %d \n",
+            System.currentTimeMillis() - start);
+    }
+
+    public static class Task {
+        public Boolean isValid(String str) {
+            long start = System.currentTimeMillis();
+            // 这里模拟耗时操作
+            try {
+                long l = (long)(Math.random() * 10000);
+                Thread.sleep(l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("echo finished. cost: %d \n", System.currentTimeMillis() - start);
+            if (Integer.parseInt(Splitter.on('-').splitToList(str).get(1)) % 7 == 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+}
+
+```
+
+- 优点:
+  - 效率上要比future.get整体好很多: 由于`CompletionService`内部实现, 是把结果放入一个共享的queue中, 而不是串行地顺序地future.get
+- 缺点:
+  - 仍然需要维护线程池`ExecutorService`
+  - 由于拿到的结果是乱序的, 因此不容易get到上下文信息. 如上边例子, 很难知道哪个String是valid的. 必须进行一层封装, 这样增加了实现的复杂度.
 
 ## 几种实现方式总结
 使用起来都不太优雅: 
 1. 需要自己管理线程池
 2. 需要自己做结果的聚合
 3. 需要自己处理异常情况等
-因此我基于CompletionService的方式, 封装了一个小的Fork&Join框架, 来满足一些简单需求.
+
+因此我基于`CompletionService`的方式, 封装了一个小的Fork&Join框架, 来满足日常需求.
 
 # 框架参考代码
 
@@ -181,8 +430,9 @@ public class CustomForkJoinResult<V> {
 ```java
 boolean isValid(String a);
 ```
-当Fork&Join框架传入一堆的String时, 如果直接将结果聚合, 由于结果是乱序拿到的,  
-那么拿到的是一堆的"boolean"值, 我们根本不知道哪个String对应哪个boolean.
+
+当Fork&Join框架传入一堆的String时, 如果直接将结果聚合. 
+由于结果是乱序拿到的, 那么拿到的是一堆的"boolean"值, 我们根本不知道哪个String对应哪个boolean.
 也就不知道哪个String是有效的, 哪个String是无效的了. (具体可以参见下边的测试代码)
 
 # 测试验证
