@@ -11,4 +11,5 @@ group :jekyll_plugins do
     gem "webrick", "~> 1.7"
     gem 'jekyll-toc'
     gem 'jekyll-sitemap'
+    gem "nokogiri", ">= 1.6.7.rc"
 end

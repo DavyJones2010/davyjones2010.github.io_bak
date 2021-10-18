@@ -34,6 +34,7 @@ bundle install
 - [jekyll-anchor-headings](https://github.com/allejo/jekyll-anchor-headings)：方便给标题增加anchor链接，虽然也有点丑，😅
 - [font-awesome](http://www.fontawesome.com.cn/icons/list/): 无须重新安装， 默认beautiful-jekyll里包含了
 - [netlifycms](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway)：使用这个CMS系统，直接在网页写blog并发布到gh-pages里
+
 ---
 
 # 踩坑记录
