@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 2021年10月第四周
-cover-img: ["", ""]
+cover-img: ["/assets/img/20211024-金桂.png", "/assets/img/20211024-八角亭迷雾.png", "/assets/img/20211024-沙丘.png"]
 tags: [weekend, diary, books]
 lang: zh
 ---
