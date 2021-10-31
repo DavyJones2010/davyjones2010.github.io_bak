@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 2021年10月第五周
+thumbnail-img: "/assets/img/20211031-code83.png"
 cover-img: ["/assets/img/20211031-code83.png", "/assets/img/20211031-code83-2.png"]
 tags: [weekend, diary, books]
 lang: zh

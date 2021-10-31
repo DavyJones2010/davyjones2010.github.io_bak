@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 2021年10月第三周
+thumbnail-img: "/assets/img/穿越土星环.jpg"
 cover-img: ["/assets/img/穿越土星环.jpg", "/assets/img/如龙0.jpeg"]
 tags: [weekend, diary, books]
 lang: zh
