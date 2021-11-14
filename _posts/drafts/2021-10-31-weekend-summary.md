@@ -57,3 +57,6 @@ lang: zh
 总体来说作为一个工作多年的老司机, 被这么多后辈成绩甩在后边, 真是心有不甘, 后生可畏, 继续努力!
 
 后续有这种活动, 还要继续参与, 简直是小投入, 大回报, 其乐无穷~
+
+---
+另外, 附加一个网站, 可以在线看到数据结构的生成逻辑, 十分方便: [Data Structure Visualizations](https://www.cs.usfca.edu/~galles/visualization/)
