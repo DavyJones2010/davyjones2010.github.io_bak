@@ -6,8 +6,6 @@ tags: [code-snippets, linux]
 ---
 
 # 背景
-
-
 # 常用Linux命令
 
 ## 文本处理
