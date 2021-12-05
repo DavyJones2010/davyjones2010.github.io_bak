@@ -1,32 +1,106 @@
 ---
 layout: post
-title: 关于吞吐量与速度的常识
-cover-img: ["/assets/img/穿越土星环.jpg"]
+title: 计算机常用接口标准与速度的常识
+cover-img: ["2021-11-19-throughput-cover.jpg"]
 tags: [common-sense, throughput]
 lang: zh
 ---
 
 # 常见接口协议速度
 ---
+## 内存接口
+### DDR
+- 内存的标准接口.
+- DDR与DIMM区别:
+  - DIMM是指针脚插槽, 也就是物理结构方面的分类
+  - 而SDRAM和DDR都是内部技术方面的分类
 
-## HDMI
-* 2.1 标准: 48Gbps
-* 2.0 标准: 18Gbps
-![img_1.png](img_1.png)
+#### Spec
+|SDRAM/DDR	|型號	|資料寬度(bit)	|內部時脈(MHz)	|頻率速度	|頻寬(頻率x寬度)|
+|  ----  | ----  |  ----  |  ----  |  ----  |  ----  |
+|DDR	|DDR-266	|64	|133	|266	|2.1GBytes/sec	|
+|DDR	|DDR-400	|64	|200	|400	|3.2GBytes/sec	|
+|DDR	|DDR2-800	|64	|200	|800	|6.4GBytes/sec	|
+|DDR	|DDR3-1600	|64	|200	|1600	|12.8GBytes/sec	|
+|DDR	|DDR4-2133	|64	|200	|2133	|17.0GBytes/sec	|
+|DDR	|DDR4-2400	|64	|200	|2400	|19.2GBytes/sec	|
+|DDR	|DDR4-2666	|64	|200	|2666	|21.3GBytes/sec	|
+|DDR	|DDR4-3200	|64	|200	|3200	|25.6GBytes/sec	|
 
 
-## SATA
-*
+#### DIMM接口图片
+![2021-11-19-throughput-dimm.png.png](2021-11-19-throughput-dimm.png)
 
-## PCIE
-*
+#### 疑问
+- by 2021年, DDR4是主流, 2021年9月, SK Hynix出产第一批DDR5内存
+- DDR2-800的速度基本上跟HDMI 2.1速度差不多了. 果然整体还是DDR速度最快
 
-## USB
-* 2.0
-* 3.0
+## 硬盘接口
+### SATA
+一般老的HDD硬盘(2021年), 都用SATA接口: 
+#### Spec
+|  版本   | 頻寬 (Gbit/s)  | 速度 (MByte/s) |
+|  ----  | ----  |  ----  |
+|SATA 1.0	|1.5	| 150 |
+|SATA 2.0	|3		| 300 |
+|SATA 3.0	|6		| 600 |
+#### 图片
+![2021-11-19-throughput-sata.png.png](2021-11-19-throughput-sata.png)
 
-## 雷电
+### PCIE
+一般新的SSD硬盘(2021年), 显卡等, 都用PCIE接口:
+#### Spec
+|  規格   | 1x頻寬  | 16x頻寬 |
+|  ----  | ----  |  ----  |
+|PCIe |1.0	|250MByte/s	|	4GByte/s|
+|PCIe |2.0	|500MByte/s	|	8GByte/s|
+|PCIe |3.0	|~1GByte/s	|~16GByte/s	|
+|PCIe |4.0	|~2GByte/s	|~32GByte/s	|
 
+#### 图片
+![2021-11-19-throughput-pcie.png](2021-11-19-throughput-pcie.png)
+
+## 外设
+### USB
+U盘等
+#### Spec
+|  版本   | 頻寬 (Gbit/s)  | 速度 (MByte/s) |
+|  ----  | ----  |  ----  |
+|USB |1.0	|12		|1.5 	|
+|USB |2.0	|480	|60		|
+|USB |3.0	|5G		|500	|
+|USB |3.1	|10G	|1000 	|
+
+#### 图片
+
+### IDE
+
+
+## 视频接口
+
+### VGA
+模拟信号
+
+### DP(DisplayPort)
+
+
+### 雷电(ThunderBolt)
+#### Spec
+|  版本   | 頻寬 (Gbit/s)  | 速度 (MByte/s) |
+|  ----  | ----  |  ----  |
+|Thunderbolt 1	|10000bps  |1.25GB  |
+|Thunderbolt 2	|20000bps  |2.5GB 	|
+
+#### 图片
+![2021-11-19-throughput-thunderbolt.png](2021-11-19-throughput-thunderbolt.png)
+
+### HDMI
+#### Spec
+* 2.1 标准: 48Gbps --> 6GB
+* 2.0 标准: 18Gbps --> 2.25GB
+  ![2021-11-19-throughput-hdmi.png](2021-11-19-throughput-hdmi.png)
+
+#### 图片
 
 
 # 例子
@@ -45,3 +119,14 @@ lang: zh
 以4K清晰度, FPS 120Hz, 游戏为例, 需要传输的带宽是怎样的?
   - 4096*2160*24*120 = 25,480,396,800 bps =23.73 Gbps 即HDMI 2.0不够
 
+---
+自己使用的电脑 
+- MacBook Pro (Retina, 15-inch, Mid 2015), 
+  - 256GB的SSD硬盘, 接口使用的SATA
+  - 内置键盘, 触摸板, 使用USB 3.0
+  - 2块1600MHz的DDR3 内存
+  - 2个ThunderBolt 2.0接口
+- MacBook Pro (Retina, 16-inch, Mid 2020), 使用的是256GB的SSD硬盘, 接口使用的Nvme
+
+# Refs
+- [各种通信接口速率](https://www.jianshu.com/p/1fc8c9926ac1)
