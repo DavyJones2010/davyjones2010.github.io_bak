@@ -30,7 +30,7 @@ lang: zh
 
 
 #### DIMM接口图片
-![2021-11-19-throughput-dimm.png.png](2021-11-19-throughput-dimm.png)
+![2021-11-19-throughput-dimm.png.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-dimm.png)
 
 #### 疑问
 - by 2021年, DDR4是主流, 2021年9月, SK Hynix出产第一批DDR5内存
@@ -53,7 +53,7 @@ lang: zh
 
 
 #### 图片
-![2021-11-19-throughput-sata.png.png](2021-11-19-throughput-sata.png)
+![2021-11-19-throughput-sata.png.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-sata.png)
 
 ### PCIE/M.2接口
 
@@ -76,7 +76,7 @@ lang: zh
 |PCIe |4.0	|~2GByte/s	|~32GByte/s	|
 
 #### 图片
-![2021-11-19-throughput-pcie.png](2021-11-19-throughput-pcie.png)
+![2021-11-19-throughput-pcie.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-pcie.png)
 
 ## 外设
 ### USB
@@ -110,13 +110,13 @@ U盘等
 |Thunderbolt 2	|20000bps  |2.5GB 	|
 
 #### 图片
-![2021-11-19-throughput-thunderbolt.png](2021-11-19-throughput-thunderbolt.png)
+![2021-11-19-throughput-thunderbolt.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-thunderbolt.png)
 
 ### HDMI
 #### Spec
 * 2.1 标准: 48Gbps --> 6GB
 * 2.0 标准: 18Gbps --> 2.25GB
-  ![2021-11-19-throughput-hdmi.png](2021-11-19-throughput-hdmi.png)
+  ![2021-11-19-throughput-hdmi.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-hdmi.png)
 
 #### 图片
 
@@ -131,7 +131,7 @@ U盘等
   - 256种状态的灰度图像, 需要8bit, 成为"真彩色", 称为色深(Color Depth), 色深的位数越高，越能细腻诠释色彩的色阶变化。 
   - 由于屏幕单个色块是由RGB组成, 因此 8*3=24bit
   - 因此色彩数量: 2^24=1670万色
-![img.png](img.png)
+![img.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-pixel.png)
 
 选购显示设备时，会经常看见6bit、8bit、10bit等. 
 当前(2021年)主流的是8bit
@@ -153,7 +153,7 @@ U盘等
 
 ## Z390总线样例分析
 
-![2021-11-19-throughput-intel-z390.png](2021-11-19-throughput-intel-z390.png)
+![2021-11-19-throughput-intel-z390.png](../../assets/2021-11-19-throughput/2021-11-19-throughput-intel-z390.png)
 
 - CPU直连一条PCIE 3.0*16, 可以插入显卡/SSD
 - CPU直连2666MHz的4个DDR4 DIMM插槽
