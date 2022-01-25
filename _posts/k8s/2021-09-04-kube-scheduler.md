@@ -9,6 +9,57 @@ tags: [k8s, scheduler]
 lang: zh
 ---
 
+# 总结
+
+## 关于kube-scheduler的资源记账: 
+### 以为的记账流程: 
+- 研究kube-scheduler代码, 关于nodeInfo里资源的记账, 总是有个误解, 以为会分为三个部分: 
+  - node上全量资源(totalCpu, totalMem)
+  - node上已经确定占用的资源(usedCpu, usedMem)
+  - 调度完成, node上待绑定的资源(assumedCpu, assumedMem), 实际绑定成功/失败未知, 只是for调度使用:  
+    - 当绑定成功, 会收到事件, 将assumedCpu/Mem清理, 并把assumedCpu/Mem 放到usedCpu/usedMem里
+    - 当绑定失败, 会收到事件, 将assumedCpu/Mem清理, 不叠加到usedCpu/usedMem里.
+### 实际的记账流程参照文章 [Node allocatable资源的含义](https://www.mgasch.com/2017/10/sched-reconcile/)
+- 但实际上kube-scheduler, 把nodeInfo分为2部分:
+  - node上全量资源(NodeInfo.Allocatable), 注意之前经常会搞混, 以为allocatable = total - used; 实际上allocatable代表total. 实际发现其他同学也有理解错的: [Allocatable Resources is calculated wrong](https://github.com/kubernetes-sigs/kube-batch/issues/881)
+  - node上已经占用的资源(NodeInfo.Requested), 包括如下2部分: 
+    - node上已经确定占用的资源
+    - 调度完成, node上待绑定的资源(assumedCpu, assumedMem)
+  - 实际的对账过程: 
+    - 当调度成功, bind前, 会直接把pod.request叠加到node.requested里.
+    - bind成功, (修改pod状态), node.requested不变
+    - bind失败, 1秒一次的轮询, 更新pod状态, 将pod的资源归还回node.requested里
+    - kube-scheduler重启: 会
+### 引发的问题
+- kube-scheduler重启, 会执行一次fullsync, cache同步更新量会很大, 耗时可能会比较久, 这中间scheduler是不提供服务的
+- 如果多个scheduler同时工作, 由于不共享requestedResource, 并发场景下, 导致资源超卖: 
+![img.png](img.png)
+    - 当前解决方案: 
+
+### 如何改进/使用多个scheduler
+HOSS方案: 
+#### Part1: Job dispatch:
+1. instanceLevel load balancing: 防止某些scheduler非常繁忙, 某些scheduler非常空闲.
+2. dynamic scheduling policy: 基于scheduler的标签, 进行调度
+
+![img_1.png](img_1.png)
+方案总结: 即新增scheduler-controller模块, 对多个scheduler进行进一步调度
+
+#### Part2: Conflict resolution:
+1. 
+
+![img_2.png](img_2.png)
+方案总结: 即在api-server增加conflict-resolver模块, 识别binding的request, 进行冲突校验, 进行failfast.
+
+#### HOSS与kube-scheduler的对比
+![img_3.png](img_3.png)
+
+# Refs
+
+[Node allocatable资源的含义](https://www.mgasch.com/2017/10/sched-reconcile/)
+[Running Multiple Schedulers in Kubernetes by Xiaoning Ding, Huawei](https://www.youtube.com/watch?v=avORKrcyctM)
+
+
 ```shell
 echo "Hello world! ecs"
 ```
