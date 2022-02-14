@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 记一次Maven传递依赖失效问题排查
-tags: [learn-from-failure, java, mdc, npe]
+tags: [learn-from-failure, maven, transitive dependency]
 lang: zh
 ---
 
@@ -73,3 +73,36 @@ resource-manage --依赖--> shared-common --依赖--> diamond-client
 
 # 扩展研究
 ## 传递依赖失效的其他场景
+### scope问题
+1. 由于本问题中是在UT运行时发生的CNFE(ClassNotFoundException), 因此基本可以排除由于scope的原因. 
+2. 但如果是在运行时发生了CNFE, 则需要看下是否使用了<scope>test/provided/system</scope>等标签
+
+### optional问题
+- 如果optional为false, 则代表引用该pom的项目, 不会间接依赖到该GAV
+```xml
+<dependency>
+    <groupId>net.biancheng.www</groupId>
+    <artifactId>X</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--设置可选依赖  -->
+    <optional>true</optional>
+</dependency>
+```
+
+- 关于 optional 元素及可选依赖说明如下：
+1. 可选依赖用来控制当前依赖是否向下传递成为间接依赖；
+2. optional 默认值为 false，表示可以向下传递称为间接依赖；
+3. 若 optional 元素取值为 true，则表示当前依赖不能向下传递成为间接依赖。
+4. 仅适用于 项目的单纯依赖关系，不适合 父子工程。假设A工程是 parent，那么A工程即便加上了 optinal，子项目也将继承父工程的所有依赖关系。
+
+- 在什么场景下, 会把<optional>true</optional>设置为true?
+假设一个关于数据库持久化的项目(Project C), 为了适配更多类型的数据库持久化设计，比如 Mysql 持久化设计(Project A) 和 Oracle 持久化设计(Project B)，
+- 当我们的项目(Project D) 要用的 Project C 的持久化设计，不可能既引入 mysql 驱动又引入 oracle 驱动吧，所以我们要显式指定一个，就是这个道理了
+
+
+
+
+# Refs
+- [Maven依赖传递,排除依赖和可选依赖](https://www.cnblogs.com/cy0628/p/15034450.html#:~:text=Maven%20%E7%9A%84%E4%BE%9D%E8%B5%96%E4%BC%A0%E9%80%92%E6%9C%BA%E5%88%B6,%E4%B8%8A%E7%AE%80%E5%8C%96POM%20%E7%9A%84%E9%85%8D%E7%BD%AE%E3%80%82)
+- [Maven optional关键字透彻图解](https://juejin.cn/post/6844903987322290189)
+
