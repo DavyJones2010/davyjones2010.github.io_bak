@@ -104,7 +104,7 @@ public class MyImpl implements MyInterface {
 </dependency>
 ```
 ## Jackson序列化方式, 针对匿名内部类, 可以序列化成功, 但是反序列化失败 
-本质上是由于 `@Cachable` 默认使用了Jackson序列化方式, 而cache中的对象是匿名内部类, 从而反序列化失败.
+本质上是由于 `@Cachable` 默认使用了Jackson序列化方式, 会默认把类型信息放到json里, 而cache中的对象是匿名内部类, 从而反序列化失败.
 > 内部类实例需要其外部类实例对象来进行实例化，而Jackson在反序列化时无法创建其外部类实例对象
 
 
@@ -176,6 +176,7 @@ public class JacksonSerializeTest2 {
                 return "Hello";
             }
         };
+        //String s = JSON.toJSONString(c, new SerializerFeature[] {SerializerFeature.WriteClassName});
         String s = JSON.toJSONString(c);
         System.out.println(s);
         Object parse = JSON.parse(s);
@@ -183,6 +184,25 @@ public class JacksonSerializeTest2 {
         assertEquals("JSONObject", parse.getClass().getSimpleName());
         MyClass c2 = JSON.parseObject(s, MyClass.class);
         System.out.println(c2.getName());
+    }
+
+    @Test
+    public void fastjsonTest2() {
+        // 原始是AnonymousInnerClass
+        MyClass c = new MyClass() {
+            @Override
+            public String getName() {
+                return "Hello";
+            }
+        };
+        String s = JSON.toJSONString(c, new SerializerFeature[] {SerializerFeature.WriteClassName});
+        assertEquals("{\"@type\":\"edu.xmu.test.javax.jackson.JacksonSerializeTest2$3\",\"name\":\"Hello\"}", s);
+        // 由于序列化的s里边包含了类型信息, 下边会报错, 信息如下:
+        /*
+         * com.alibaba.fastjson.JSONException: default constructor not found. class edu.xmu.test.javax.jackson
+         * .JacksonSerializeTest2$3
+         */
+        Object parse = JSON.parse(s);
     }
 }
 ```
