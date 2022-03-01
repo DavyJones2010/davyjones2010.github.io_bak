@@ -229,3 +229,60 @@ public void fastJsonTest() {
 ## Refs
 - [一次反序列化内部类导致的问题排查过程](https://juejin.cn/post/6844904170403659784) 
 
+# k8s java client遇到的joda.time序列化问题
+## 背景
+两个系统间通过dubbo进行RPC调用, 都引用了k8s-java-client, dubbo接口说明如下:
+```java
+import io.kubernetes.client.openapi.models.V1Pod;
+
+public interface K8sService {
+    void doSomething(V1Pod podSpec); 
+}
+```
+
+## 环境信息
+- 使用的k8s-java-client版本如下:
+```xml
+<dependency>
+    <groupId>io.kubernetes</groupId>
+    <artifactId>client-java</artifactId>
+    <version>10.0.0</version>
+</dependency>
+```
+
+## 错误信息
+1. 场景1, 系统调用 
+```java
+Caused by: java.lang.RuntimeException: Serialized class io.kubernetes.client.openapi.models.V1Pod must implement java.io.Serializable
+```
+2. 场景2, 在provider机器上, 登录dubbo控制台, 手动invoke, 错误信息如下: 
+```java
+Failed to invoke method normalizeCpuMem, cause: java.lang.RuntimeException: Failed to set pojo V1ObjectMeta property deletionTimestamp value 2022-02-28T18:00:24.000+08:00(class java.lang.String), cause: argument type mismatch
+java.lang.RuntimeException: Failed to set pojo V1ObjectMeta property deletionTimestamp value 2022-02-28T18:00:24.000+08:00(class java.lang.String), cause: argument type mismatch
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize0(PojoUtils.java:450)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize0(PojoUtils.java:445)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize0(PojoUtils.java:372)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize0(PojoUtils.java:445)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize0(PojoUtils.java:445)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize(PojoUtils.java:200)
+  at com.alibaba.dubbo.common.utils.PojoUtils.realize(PojoUtils.java:79)
+  at com.alibaba.dubbo.rpc.protocol.dubbo.telnet.InvokeTelnetHandler.telnet(InvokeTelnetHandler.java:95)
+  at com.alibaba.dubbo.remoting.telnet.support.TelnetHandlerAdapter.telnet(TelnetHandlerAdapter.java:54)
+```
+
+## 原因分析
+至此, 可以基本知道是由于序列化问题导致. 尤其是 `V1ObjectMeta` 里的 `deletionTimestamp` 字段, 是 `org.joda.time.DateTime` 类型. 
+经搜索得知, 已经有人在dubbo社区提出这个问题: [使用hessian2无法反序列化jodatime](https://github.com/apache/dubbo/issues/9676)
+但该bug仍然处于Open状态.
+
+## 解决方案
+当前临时的解决方案是: 
+1. 第一步: 修改接口签名如下, 使用序列化后的JsonString.
+```java
+public interface K8sService {
+    void doSomething(String podSpec); 
+}
+```
+2. 第二步: Provider&Consumer都使用同样的`toJson(V1Pod)`逻辑.
+参见开源实现: [gson-jodatime-serialisers](https://github.com/gkopff/gson-jodatime-serialisers)
+
