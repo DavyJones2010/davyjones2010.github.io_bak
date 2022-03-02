@@ -242,6 +242,7 @@ public interface K8sService {
 
 ## 环境信息
 - 使用的k8s-java-client版本如下:
+
 ```xml
 <dependency>
     <groupId>io.kubernetes</groupId>
@@ -252,10 +253,13 @@ public interface K8sService {
 
 ## 错误信息
 1. 场景1, 系统调用 
+
 ```java
 Caused by: java.lang.RuntimeException: Serialized class io.kubernetes.client.openapi.models.V1Pod must implement java.io.Serializable
 ```
-2. 场景2, 在provider机器上, 登录dubbo控制台, 手动invoke, 错误信息如下: 
+
+2. 场景2, 在provider机器上, 登录dubbo控制台, 手动invoke, 错误信息如下:
+
 ```java
 Failed to invoke method normalizeCpuMem, cause: java.lang.RuntimeException: Failed to set pojo V1ObjectMeta property deletionTimestamp value 2022-02-28T18:00:24.000+08:00(class java.lang.String), cause: argument type mismatch
 java.lang.RuntimeException: Failed to set pojo V1ObjectMeta property deletionTimestamp value 2022-02-28T18:00:24.000+08:00(class java.lang.String), cause: argument type mismatch
@@ -278,11 +282,13 @@ java.lang.RuntimeException: Failed to set pojo V1ObjectMeta property deletionTim
 ## 解决方案
 当前临时的解决方案是: 
 1. 第一步: 修改接口签名如下, 使用序列化后的JsonString.
+
 ```java
 public interface K8sService {
     void doSomething(String podSpec); 
 }
 ```
+
 2. 第二步: Provider&Consumer都使用同样的`toJson(V1Pod)`逻辑.
 参见开源实现: [gson-jodatime-serialisers](https://github.com/gkopff/gson-jodatime-serialisers)
 
