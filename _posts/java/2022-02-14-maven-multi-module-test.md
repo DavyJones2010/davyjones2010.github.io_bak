@@ -26,7 +26,8 @@ tags: [springboot, maven, maven-module, maven test]
 
 # 基本规范
 ## root-module pom文件有两个作用: 
-1. 作为parent module, 管理各个子模块, 便于resolve自身各个模块之间的依赖关系. 如下, biz_module依赖(GAV)middleware-module + shared-common-module; middleware-module依赖(GAV)shared-common-module: 
+1. 作为parent module, 管理各个子模块, 便于resolve自身各个模块之间的依赖关系. 如下, biz_module依赖(GAV)middleware-module + shared-common-module; middleware-module依赖(GAV)shared-common-module:
+
 ```xml
 <modules>
     <module>shared-common-module</module>
@@ -35,6 +36,7 @@ tags: [springboot, maven, maven-module, maven test]
 </modules>
 ```
 2. 作为parent pom, 统一管理各个子模块的Maven依赖, 同时默认引入通用的maven依赖(例如apache-commons, guava等), 而无需子模块重复引入.
+
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -80,7 +82,8 @@ controller-module --> service-module --> cache-api                              
 ## 二: 模块化的配置能力
 ### 第一步: 模块配置文件按照 通用+测试/生产/等环境相关 两类进行拆分
 例如persistence-mysql模块的配置项拆分为如下几个: 
-- persistence-mysql-common.properties --> common, 环境无关的配置, 如下: 
+- persistence-mysql-common.properties --> common, 环境无关的配置, 如下:
+
 ```
 spring.datasource.driver.driver-class-name=com.mysql.jdbc.Driver
 spring.datasource.driver.type=com.xxx.druid.pool.DruidDataSource
@@ -88,6 +91,7 @@ spring.datasource.driver.maxActive=300
 spring.datasource.driver.initialSize=20
 ```
 - persistence-mysql-test.properties --> for ut , 如下: 
+
 ```properties
 spring.datasource.jdbc-url=jdbc:mysql://xxx:3306/test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
 spring.datasource.username=usr
