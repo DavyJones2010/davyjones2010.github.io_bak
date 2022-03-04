@@ -60,6 +60,7 @@ public interface IUserDAO {
 # xml sql的配置
 ## 第一步: mapper interface定义
 - 注意一定要使用 `@Repository` 注释 `UserMapper`, 否则该Mapper无法被Spring容器管理
+
 ```java
 package edu.xmu.mybatis.somemapper;
 
