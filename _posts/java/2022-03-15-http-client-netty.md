@@ -4,6 +4,7 @@ title: 异步HttpClient使用Netty作为SocketChannel的Provider
 tags: [httpclient, asynchttpclient, netty]
 ---
 # 背景
+
 ```java
 <dependency>
     <groupId>com.ning</groupId>
@@ -19,6 +20,7 @@ tags: [httpclient, asynchttpclient, netty]
 
 # AsyncHttpClient 重要参数与使用指南
 ## 重要参数
+
 ```java
 allowPoolingConnections
 ```
@@ -30,6 +32,7 @@ allowPoolingConnections
 ### IO线程池最好不要用CachedThreadPool-->此处存疑, 暂时无法复现任务被Rejected场景
 - 如下样例, ioThread线程池只有10, 并发的请求有100, 由于`Executors.newCachedThreadPool`内部使用`SynchronousQueue`, 从而导致突发的请求会被Reject掉.
 - 如果要用也要评估好容量, size一定要大于, 防止Reject请求??
+
 ```java
 public void init() {
         ExecutorService ioThreadPool=Executors.newCachedThreadPool(new DefaultThreadFactory(workerThreadPoolName));
@@ -63,7 +66,7 @@ public void postTest() throws InterruptedException {
 2. 占用IO线程, 导致其他IO任务等待.
 由于此时http response已经完全读取完毕, 因此可以将response丢进worker线程池中, 执行耗时的业务操作. 从而把TCP连接复用/关闭.
 如下样例, 导致100个TCP连接一直处于ESTABLISHED状态
----
+
 ```java
 public static class CommonCallback extends AsyncCompletionHandler {
   @Override
@@ -79,6 +82,7 @@ public static class CommonCallback extends AsyncCompletionHandler {
 
 ### 当设置了maxConnectionsPerHost时, allowPoolingConnections最好设置为true, 并且请求最好不要瞬时并发
 否则如下例子, 请求就不会排队了, TCP连接也无法重用, 直接进入了Handler的`onThrowable()`方法里
+
 ```java
 for (int i = 0; i < 100; i++) {
     doAsyncGet(url);
@@ -92,6 +96,7 @@ for (int i = 0; i < 100; i++) {
 - 实际场景: 
   - 大文件的下载(基于HTTP/TCP协议)
   - HTTP/1.1, 即访问某个网站时, 短时间内需要往该Host发送N多HTTP请求.
+
 ```java
 allowPoolingConnections = true;
 pooledConnectionIdleTimeout = 10 * 1000; // 设定池子里空闲TCP连接的保持时间, 大于该时长, 则TCP连接被关闭, 从连接池中移除
@@ -101,6 +106,7 @@ pooledConnectionIdleTimeout = 10 * 1000; // 设定池子里空闲TCP连接的保
 - 实际场景: 
   - 爬虫, 需要爬取N多个Server的标题/概要信息, 构成网站地图, 每个Server/Host的内容量较少. (当然如果是单个Server有N多内容要爬取, 也可以使用长连接)
 - 实际参数: 
+
 ```java
 allowPoolingConnections = false; // 没必要把TCP连接放进池子里, 因为后续短期大概率就不会再跟该Host建立TCP连接
 
