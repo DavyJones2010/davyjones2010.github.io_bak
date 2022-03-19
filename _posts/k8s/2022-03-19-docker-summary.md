@@ -10,7 +10,12 @@ lang: zh
    1. `cgroups`: 本质上是Linux内核提供的资源Quota约束机制, 包括cpu/mem/io等
    2. `namespace`: [命名空间](https://yeasy.gitbook.io/docker_practice/underly/namespace), 包括pid, net, ipc, mnt(文件目录root), uts, user(即username, group等)  
    3. `UnionFS`: 是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。
-2. Running/Stopped的容器, 其镜像是不能被删除的(除非强制删除). 启动容器的时候, 需要重新使用镜像作为模板.
+   4. 操作系统等, 本质是共享内核, 所以不需要操作系统进行虚拟化. 可以认为每个Docker容器只是一个很轻量的文件目录&资源隔离
+   5. 只能创建linux类docker
+2. 在Mac上的Docker 
+   1. 同样用虚拟化技术xhyve或者virtualbox来实现, 不共享mac os内核。
+   2. 只能创建linux类docker，不能创建Mac OSX的docker. update 2022, [Docker-OSX](https://github.com/sickcodes/Docker-OSX) 项目可以了. 但本质上也是使用了KVM虚拟机.
+3. Running/Stopped的容器, 其镜像是不能被删除的(除非强制删除). 启动容器的时候, 需要重新使用镜像作为模板.
 
 
 # 疑问与思考
