@@ -24,6 +24,59 @@ lang: zh
    1. MacOS: `~/Library/Containers/com.docker.docker/Data/vms/0/`
 3. Docker容器的生命周期是怎样的? 为啥Stop之后还需要Remove掉? 如果不Remove, 会怎样?
 
+# 深入机制探讨与研究
+## 镜像Cache机制
+看了Docker官方文档关于 [layer-caching](https://docs.docker.com/get-started/09_image_best/#layer-caching) 的介绍, 不太理解具体怎么判断是否需要使用缓存.
+还好 [docker build 的 cache 机制](https://guide.daocloud.io/dcs/docker-build-cache-9153988.html) 文章很清晰地解释了这个疑问. 这里自己总结下: 
+### 原始的Dockerfile如下 
+```shell
+FROM node:12-alpine
+# Adding build tools to make yarn install work on Apple silicon / arm64 machines
+WORKDIR /app
+COPY . .
+RUN yarn install --production
+CMD ["node", "src/index.js"]
+```
+存在的问题:
+1. 由于第二层是 `COPY . .` 因此根据如下原则
+> 判断 ADD 命令或者 COPY 命令后紧接的文件是否发生变化，则成为是否延用 cache 的重要依据。
+> Docker 采取的策略是：获取 Dockerfile 下内容（包括文件的部分 inode 信息），
+> 计算出一个唯一的 hash 值，若 hash 值未发生变化，则可以认为文件内容没有发生变化，可以使用 cache 机制；反之亦然。
+2. 即使我们只修改了应用的某个static/js文件, 没有修改node的依赖(即package.json), 第二层`COPY . .`是不会命中缓存的
+3. 因此根据如下原则,第三层`RUN yarn install --production`也不会命中缓存, 需要重新进行依赖的安装, 从而构建出新的镜像层次(Image Layer), 而这个是很耗时的操作.
+> Once a layer changes, all downstream layers have to be recreated as well
+
+### 改进的Dockerfile如下: 
+```shell
+FROM node:12-alpine
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --production
+COPY . .
+CMD ["node", "src/index.js"]
+```
+好处分析: 
+1. 如果`package.json`文件修改, 那么由于文件hash值变化, 因此第二层`COPY package.json yarn.lock ./`必然失效, 从而第三层也失效, 进入耗时的`yarn install`阶段, 符合预期.
+2. 如果`package.json`文件未修改, 只是修改了应用的某个static/js文件, 那么第二层`COPY package.json yarn.lock ./`必然不会失效, 从而第三层也不会失效, 从而跳过了耗时的`yarn install`阶段, 最大化地利用了缓存.
+
+### RUN 命令存在外部依赖
+如果RUN命令存在外部依赖, 如
+`RUN apt-get update`
+`RUN git clone -q https://github.com/docker-in-practice/todo.git`
+等.
+那么随着时间的推移, 
+- 一年的 apt-get update 和一年后的 apt-get update, 由于软件源软件的更新, 从而导致产生的镜像理论上应该不同. 
+- `todo.git`代码库进行了更新push
+如果继续使用 cache 机制, 将存在不满足用户需求的情况.
+在这种情况下, 在构建镜像时可以强制不使用缓存, 这样每层构建时均不使用缓存:  
+```shell
+docker build --no-cache -t getting-started .
+```
+
+### 镜像构建缓存利用的最佳实践
+- 书写 Dockerfile 时, 应该将更多静态的安装&配置命令尽可能地放在 Dockerfile 的较前位置
+
+
 # 常用命令
 ## 容器
 容器生命周期
