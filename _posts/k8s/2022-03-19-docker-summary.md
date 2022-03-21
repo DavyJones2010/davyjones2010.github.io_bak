@@ -12,10 +12,27 @@ lang: zh
    3. `UnionFS`: 是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。
    4. 操作系统等, 本质是共享内核, 所以不需要操作系统进行虚拟化. 可以认为每个Docker容器只是一个很轻量的文件目录&资源隔离
    5. 只能创建linux类docker
+   6. 每个Docker容器, 在Linux上就是一个进程. 但如果Docker容器内部, 本身启动了多个进程, 例如Nginx容器启动3个进程, 那么在Host上表现为啥?
+> It is generally recommended that you separate areas of concern by using one service per container. 
+> That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). 
+> It’s ok to have multiple processes, but to get the most benefit out of Docker, avoid one container being responsible for multiple aspects of your overall application. 
+> You can connect multiple containers using user-defined networks and shared volumes.
+
 2. 在Mac上的Docker 
    1. 同样用虚拟化技术xhyve或者virtualbox来实现, 不共享mac os内核。
    2. 只能创建linux类docker，不能创建Mac OSX的docker. update 2022, [Docker-OSX](https://github.com/sickcodes/Docker-OSX) 项目可以了. 但本质上也是使用了KVM虚拟机.
 3. Running/Stopped的容器, 其镜像是不能被删除的(除非强制删除). 启动容器的时候, 需要重新使用镜像作为模板.
+4. Docker vs. VM
+> 前台执行和后台执行的问题：
+Docker 不是虚拟机，容器中的应用都应该以前台执行，而不是像虚拟机、物理机里面那样，用 start / systemctl 去启动后台服务，容器内没有后台服务的概念。
+比如：如果我们将CMD 写成这样：
+CMD service nginx start
+然后会发现容器执行后就立刻退出了，甚至在容器内使用systemctl 命令结果却发现根本执行不了。这就是因为没有搞明白前台、后台的概念，没有区分容器和虚拟机的差异，依旧在以传统虚拟机的角度去理解容器
+对于容器而言，其启动程序就是容器应用进程，容器就是为了主进程而存在的，主进程退出，容器就失去了存在的意义，从而退出，其它辅助进程不是它需要关心的东西。
+而使用 service nginx start 命令，则是希望 start 来已后台守护进程形式启动nginx服务。而 CMD service nginx start 会被理解为 CMD ["sh", "-c", "service nginx start"]，因此主进程实际上是sh， 那么当service nginx start 命令结束后，sh 也就结束了， sh 作为主进程退出了，自然就会令容器退出。
+正确的做法是直接执行 nginx 可执行文件，并且要求以前台形式。如：
+CMD ["nginx", "-g"," daemon off;"]
+
 
 
 # 疑问与思考
@@ -27,7 +44,7 @@ lang: zh
 # 深入机制探讨与研究
 ## 镜像Cache机制
 看了Docker官方文档关于 [layer-caching](https://docs.docker.com/get-started/09_image_best/#layer-caching) 的介绍, 不太理解具体怎么判断是否需要使用缓存.
-还好 [docker build 的 cache 机制](https://guide.daocloud.io/dcs/docker-build-cache-9153988.html) 文章很清晰地解释了这个疑问. 这里自己总结下: 
+还好 [docker build 的 cache 机制](http://open.daocloud.io/docker-build-de-cache-ji-zhi/) 文章很清晰地解释了这个疑问. 这里自己总结下: 
 ### 原始的Dockerfile如下 
 ```shell
 FROM node:12-alpine
@@ -74,7 +91,35 @@ docker build --no-cache -t getting-started .
 ```
 
 ### 镜像构建缓存利用的最佳实践
-- 书写 Dockerfile 时, 应该将更多静态的安装&配置命令尽可能地放在 Dockerfile 的较前位置
+- 书写 Dockerfile 时, 应该将更多静态的安装&配置命令尽可能地放在 Dockerfile 的较前位置, 如: 
+```shell
+FROM node:12-alpine
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --production
+COPY . .
+CMD ["node", "src/index.js"]
+```
+- [尽量将RUN命令在一行中执行](https://www.cnblogs.com/yanjieli/p/10246117.html)以减少镜像的层次, 如
+```shell
+FROM centos
+#RUN yum install -y gcc make cmake
+#RUN wget -O redis.tar.gz "http://download.redis.io/releases/redis-3.2.5.tar.gz" 
+#RUN mkdir -p /usr/src/redis
+#RUN tar xf redis.tar.gz -C /usr/src/redis --stript-components=1
+#RUN cd /usr/src/redis
+#RUN make
+#RUN make install
+#替换成一行:
+RUN yum install -y gcc make cmake \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redi s-3.2.5.tar.gz"  \
+    && mkdir -p /usr/src/redis \
+    && tar xf redis.tar.gz -C /usr/src/redis --stript-components=1 \
+    && cd /usr/src/redis \
+    && make \
+    && make install
+```
+
 
 
 # 常用命令
@@ -213,3 +258,4 @@ docker volume inspect <volume-name>
 # Refs
 - [容器核心:cgroups](https://www.jianshu.com/p/052e3d5792ee)
 - [Docker-从入门到实践](https://yeasy.gitbook.io/docker_practice/underly/ufs)
+- [万字长文：彻底搞懂容器镜像构建](https://moelove.info/2021/03/14/%E4%B8%87%E5%AD%97%E9%95%BF%E6%96%87%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA/)
