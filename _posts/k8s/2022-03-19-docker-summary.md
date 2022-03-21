@@ -241,7 +241,7 @@ docker inspect <the-image-id>
 
 * 创建
 ```shell
-docker volume create
+docker volume create <volume-name>
 ```
 
 * 查看列表
