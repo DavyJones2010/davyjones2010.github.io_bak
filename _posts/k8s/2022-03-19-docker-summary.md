@@ -90,8 +90,13 @@ CMD ["node", "src/index.js"]
 docker build --no-cache -t getting-started .
 ```
 
-### 镜像构建缓存利用的最佳实践
-- 书写 Dockerfile 时, 应该将更多静态的安装&配置命令尽可能地放在 Dockerfile 的较前位置, 如: 
+## [多阶段构建](https://yeasy.gitbook.io/docker_practice/image/multistage-builds)
+Dockerfile 多阶段构建
+
+
+
+## 镜像构建缓存利用的最佳实践
+- 应该将更多静态的安装&配置命令尽可能地放在 Dockerfile 的较前位置, 如: 
 ```shell
 FROM node:12-alpine
 WORKDIR /app
@@ -120,7 +125,17 @@ RUN yum install -y gcc make cmake \
     && make install
 ```
 
+- 尽可能的使用 COPY，因为 COPY 的语义很明确，就是复制文件而已，而 ADD 则包含了更复杂的功能，其行为也不一定很清晰。
+> 比如 <源路径> 可以是一个 URL，这种情况下，Docker 引擎会试图去下载这个链接的文件放到 <目标路径> 去。
+> 下载后的文件权限自动设置为 600，如果这并不是想要的权限，那么还需要增加额外的一层 RUN 进行权限调整，
+> 另外，如果下载的是个压缩包，需要解压缩，也一样还需要额外的一层 RUN 指令进行解压缩。
+> 所以不如直接使用 RUN 指令，然后使用 wget 或者 curl 工具下载，处理权限、解压缩、然后清理无用文件更合理。
+> 因此，这个功能其实并不实用，而且不推荐使用。
 
+- 尽可能使用[多阶段构建](https://yeasy.gitbook.io/docker_practice/image/multistage-builds)
+- 尽可能减少镜像层次
+
+- [慎用 docker commit](https://yeasy.gitbook.io/docker_practice/image/commit#shen-yong-docker-commit), 否则会形成黑箱镜像
 
 # 常用命令
 ## 容器
@@ -132,7 +147,6 @@ RUN yum install -y gcc make cmake \
 ---
 * 使用镜像创建容器
   * v: 挂载volume
-  * 
 ```shell
 docker create -p 3000:3000 --name <the-container-id> <the-image-id>
 docker create -p 3000:3000 -v <the-volume-id>:<mount-point> --name <the-container-id> <the-image-id>
@@ -140,22 +154,26 @@ docker create -p 3000:3000 -v <the-volume-id>:<mount-point> --name <the-containe
 
 * 查看运行的容器
     * 查看运行中的容器
+
 ```shell
 docker ps
 CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS         PORTS                                       NAMES
 d2c016a1e2ab   getting-started          "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:3000->3000/tcp, :::3000->3000/tcp   confident_bouman
 ```
     * 查看所有容器(包括Stopped)
+
 ```shell
 docker ps -a
 docker container ls -a
 ```
     * 查看容器Command完整列表
+
 ```shell
 docker ps --no-trunc
 ```
 
     * 查看容器详情
+
 ```shell
 docker inspect <the-container-id>
 ```
@@ -163,6 +181,7 @@ docker inspect <the-container-id>
 * 登录容器
   * -i, --interactive 保持STDIN打开，即使没有连接
   * -t, --tty 分配一个pseudo-TTY
+
 ```shell
 docker exec -it <the-container-id> /bin/sh
 docker exec -it <the-container-id> /bin/bash
@@ -179,21 +198,28 @@ docker start <the-container-id>
 * 使用镜像创建&启动容器
   * -d - run the container in detached mode (in the background)
   * -p 80:80 - map port 80 of the host to port 80 in the container
+  * -t Allocate a pseudo-TTY
+  * -i interactive mode
+
 ```shell
 docker run -dp 3000:3000 <the-image-id>
+docker run -it busybox
 ```
 
 * 停止容器
+
 ```shell
 docker stop <the-container-id>
 ```
 
 * 删除容器
+
 ```shell
 docker rm <the-container-id>
 ```
 
 * 使用容器创建快照/镜像
+
 ```shell
 docker commit <the-container-id> <the-image-id>
 docker commit <the-container-id> <your-docker-namespace>/<the-image-id>
