@@ -249,6 +249,12 @@ docker tag <the-image-id> <your-docker-namespace>/<the-image-id>
 docker push <your-docker-namespace>/<the-image-id>
 ```
 
+* 删除镜像
+
+```shell
+docker rmi <the-image-id>
+```
+
 
 * 通过源文件Dockerfile构建镜像
 
@@ -281,7 +287,150 @@ docker volume ls
 docker volume inspect <volume-name>
 ```
 
+
+## Dockerfile文件
+### exec模式与shell模式
+- exec模式: 容器中的任务进程就是容器内的1号进程, 如下看到的1号进程是top
+```shell
+FROM alpine
+CMD ["top"]
+```
+
+![img_5.png](img_5.png)
+
+exec 模式的特点是不会通过 shell 执行相关的命令，所以像 $HOME 这样的环境变量是取不到的：
+```shell
+FROM alpine
+CMD ["echo", "$HOME"]
+```
+可以修改成: (这样本质上bash进程就是1号进程了, 跟shell模式一样了)
+```shell
+FROM alpine
+CMD ["sh", "-c", "echo $HOME"]
+```
+
+- shell模式: 容器中的1号进程是bash进程
+```shell
+FROM alpine
+CMD top
+```
+本质上是翻译成了: 
+```shell
+FROM alpine
+CMD ["sh", "-c", "top"]
+```
+![img_6.png](img_6.png)
+
+### CMD模式与ENTRYPOINT模式
+
+#### CMD模式
+CMD 指令的目的是：为容器提供默认的执行命令。
+CMD 指令有三种使用方式，
+1. 为 ENTRYPOINT 提供默认的参数：
+
+```shell
+CMD ["param1","param2"]
+```
+
+2. exec 模式
+
+```shell
+CMD ["executable","param1","param2"]    // 这是 exec 模式的写法, 注意需要使用双引号
+```
+
+3. shell 模式：
+
+```shell
+CMD command param1 param2                  // 这是 shell 模式的写法
+```
+
+#### ENTRYPOINT模式
+ENTRYPOINT 指令有两种使用方式: 
+- exec 模式
+
+```shell
+ENTRYPOINT ["executable", "param1", "param2"]   // 这是 exec 模式的写法, 注意需要使用双引号
+```
+
+- shell 模式
+
+```shell
+ENTRYPOINT command param1 param2                   // 这是 shell 模式的写法
+```
+
+> 指定 ENTRYPOINT  指令为 exec 模式时，命令行上指定的参数会作为参数添加到 ENTRYPOINT 指定命令的参数列表中
+
+```shell
+FROM alpine
+ENTRYPOINT [ "top", "-b" ]
+```
+
+```shell
+docker run --rm test1 -c
+// 最终结果是 top -b -c, 即-c被append为了新的参数
+```
+
+> 由 CMD 指令指定默认的可选参数
+
+```shell
+FROM alpine
+ENTRYPOINT [ "top", "-b" ]
+CMD [ "-c" ] // 默认参数
+```
+
+```shell
+docker run --rm test1
+// 最终结果是 top -b -c, 即-c被append为了新的参数
+```
+
+
+```shell
+FROM alpine
+ENTRYPOINT [ "top", "-b" ]
+CMD [ "-c" ] // 默认参数
+```
+
+```shell
+docker run --rm test1 -n 1
+// 最终结果是 top -b -n 1, 即由CMD中指定的默认参数被命令行中的参数替换掉了
+```
+
+> 指定 ENTRYPOINT  指令为 shell 模式时，会完全忽略命令行参数
+
+```shell
+FROM alpine
+ENTRYPOINT echo $HOME 
+```
+
+```shell
+docker run --rm test1 ls
+// ls 命令没有执行, 被忽略掉了
+```
+
+> 覆盖默认的 ENTRYPOINT 指令
+
+```shell
+FROM alpine
+ENTRYPOINT echo $HOME 
+```
+
+```shell
+docker run --rm --entrypoint ls test1
+// ls执行了, 覆盖掉了原始dockerfile中的entrypoint
+```
+
+
+#### 总结
+对于 CMD 和 ENTRYPOINT 的设计而言，多数情况下它们应该是单独使用的。当然，有一个例外是 CMD 为 ENTRYPOINT 提供默认的可选参数。
+我们大概可以总结出下面几条规律：
+• 如果 ENTRYPOINT 使用了 shell 模式，CMD 指令会被忽略。
+• 如果 ENTRYPOINT 使用了 exec 模式，CMD 指定的内容被追加为 ENTRYPOINT 指定命令的参数。
+• 如果 ENTRYPOINT 使用了 exec 模式，CMD 也应该使用 exec 模式。
+
+
 # Refs
 - [容器核心:cgroups](https://www.jianshu.com/p/052e3d5792ee)
 - [Docker-从入门到实践](https://yeasy.gitbook.io/docker_practice/underly/ufs)
 - [万字长文：彻底搞懂容器镜像构建](https://moelove.info/2021/03/14/%E4%B8%87%E5%AD%97%E9%95%BF%E6%96%87%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82%E5%AE%B9%E5%99%A8%E9%95%9C%E5%83%8F%E6%9E%84%E5%BB%BA/)
+- [Dockerfile 中的 CMD 与 ENTRYPOINT](https://www.cnblogs.com/sparkdev/p/8461576.html)
+- https://segmentfault.com/a/1190000016137548
