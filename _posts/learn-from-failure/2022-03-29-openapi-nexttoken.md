@@ -16,7 +16,7 @@ lang: zh
 3. 前端: 如果不分页, 导致浏览器无法缓存大量数据, 卡死.
 所以一般对于非宽表, 以500~2000作为pageSize较为合适.
 
-# 分页: pageNo+pageSize 方式
+# 方案1: pageNo+pageSize 方式
 
 ## 典型常规的分页写法
 
@@ -50,11 +50,44 @@ mysql>  select * from employees  order by emp_no desc limit 300000, 3;
 
 
 ## 问题
-随着翻页的继续, 当 `limit 1000000, 100` 的时候, 性能会急剧下降. 
-是由于MySQL会把where&order之后结果集保存下来, 然后再对结果集从0~1000000进行遍历.
+如上, 随着翻页的继续, 当 `limit 1000000, 100` 的时候, 性能会急剧下降.
 
+## 问题原因分析
+具体原因参见: [MySQL 用 limit 为什么会影响性能？]() https://mp.weixin.qq.com/s/Wtg9acg6M5q5kkSH4M3qXQ)
+这里进行个概述, 在执行SQL时, innodb会做如下两步:  
+```shell
+第一步: 查询到索引叶子节点数据
+第二步: 根据叶子节点上的主键值去聚簇索引上查询需要的全部字段值
+```
 
-# 分页: nextToken+maxResults 方式
+![img.png](img.png)
+
+> 像上面这样，需要查询1000000次索引节点，查询1000100次聚簇索引的数据，最后再将结果过滤掉前1000000条，取出最后100条。
+> MySQL耗费了大量随机I/O在查询聚簇索引的数据上，而有1000000次随机I/O查询到的数据是不会出现在结果集当中的。
+> 加载了很多热点不是很高的数据页到buffer pool，会造成buffer pool的污染，占用buffer pool的空间。
+
+# 方案2: 改进的 pageNo+pageSize 方式
+
+本质`方案1`是由于回表耗时, 那么可以先将主键筛选&查询出来, 然后直接根据筛选之后的主键去回表.
+
+## 改进的分页写法
+如下, 
+- 从 110ms->70ms. 性能有一定提升, 但由于数据集不太好, 数据量太小. 后边试试airport数据集.
+- 内层SQL本质是直接在通过主键索引将3个主键查询出来, 外层SQL根据3个主键回表查询对应行的全部信息. 
+
+```sql
+mysql> select aa.* from employees aa join (select emp_no from employees  order by emp_no desc limit 300000, 3) bb on aa.emp_no=bb.emp_no;
++--------+------------+------------+------------+--------+------------+
+| emp_no | birth_date | first_name | last_name  | gender | hire_date  |
++--------+------------+------------+------------+--------+------------+
+|  10024 | 1958-09-05 | Suzette    | Pettey     | F      | 1997-05-19 |
+|  10023 | 1953-09-29 | Bojan      | Montemayor | F      | 1989-12-17 |
+|  10022 | 1952-07-08 | Shahaf     | Famili     | M      | 1995-08-22 |
++--------+------------+------------+------------+--------+------------+
+3 rows in set (0.07 sec)
+```
+
+# 方案3: nextToken+maxResults 方式
 
 - nextToken本质上就是按照查询条件, 上一次结果集中最后一条记录的数据库主键ID值.
 - 因此直接走主键索引.
@@ -110,6 +143,81 @@ nextToken方式
 
 
 # 其他记录
+## MySQL查看BufferPool
+如下, 
+- PRIMARY: 代表bufferpool中数据页数.
+- val: 代表bufferpool中索引页.
+
+```sql
+mysql> select TABLE_NAME, index_name,count(*) from information_schema.INNODB_BUFFER_PAGE where INDEX_NAME in('val','primary') and TABLE_NAME like '%employees%' group by TABLE_NAME, index_name;
++-------------------------+------------+----------+
+| TABLE_NAME              | index_name | count(*) |
++-------------------------+------------+----------+
+| `employees`.`salaries`  | PRIMARY    |     4486 |
+| `employees`.`employees` | PRIMARY    |      887 |
+| `employees`.`employees` | val        |       11 |
+| `employees`.`dept_emp`  | PRIMARY    |      728 |
++-------------------------+------------+----------+
+4 rows in set (0.05 sec)
+```
+
+## MySQL中_rowid的使用
+### 限制条件
+适用版本: `MySQL 5.7` ~ `MySQL 8.0.26`
+参见文档: [MySQL中的_rowid](http://blog.itpub.net/26736162/viewspace-2734341/)
+
+_rowid不存在的情况:
+- `主键列`或者`非空唯一列`的类型不是`数字类型`
+- 主键是联合主键
+- 唯一列不是非空的
+
+_rowid只存在于以下情况：
+- 当表中存在一个 `数字类型的单列主键`时， _rowid其实就是指的是这个主键列
+- 当表中 不存在主键但存在一个 `数字类型的非空唯一索引`时, _rowid其实就是指的是对应`非空唯一列`
+
+
+### 测试
+
+#### 主键列不是数字类型, 不会有_rowid
+
+```sql
+mysql> desc departments;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| dept_no   | char(4)     | NO   | PRI | NULL    |       |
+| dept_name | varchar(40) | NO   | UNI | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+mysql> select _rowid from departments limit 2;
+ERROR 1054 (42S22): Unknown column '_rowid' in 'field list'
+```
+
+#### 联合主键, 不会有_rowid
+
+```sql
+mysql> show create table salaries;
++----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                                                                                                                                                                                           |
++----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| salaries | CREATE TABLE `salaries` (
+  `emp_no` int NOT NULL,
+  `salary` int NOT NULL,
+  `from_date` date NOT NULL,
+  `to_date` date NOT NULL,
+  PRIMARY KEY (`emp_no`,`from_date`),
+  CONSTRAINT `salaries_ibfk_1` FOREIGN KEY (`emp_no`) REFERENCES `employees` (`emp_no`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select _rowid from salaries limit 10;
+ERROR 1054 (42S22): Unknown column '_rowid' in 'field list'
+```
+
+### 其他
+感觉_rowid很鸡肋, 如果乱用很容易出错.
+
 ## MySQL公共大数据集
 > 为了测试大数据集nextToken与pageNo方式, 找了很多测试大数据集, 总结如下
  
