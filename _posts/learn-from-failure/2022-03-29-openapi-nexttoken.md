@@ -53,7 +53,7 @@ mysql>  select * from employees  order by emp_no desc limit 300000, 3;
 如上, 随着翻页的继续, 当 `limit 1000000, 100` 的时候, 性能会急剧下降.
 
 ## 问题原因分析
-具体原因参见: [MySQL 用 limit 为什么会影响性能？]() https://mp.weixin.qq.com/s/Wtg9acg6M5q5kkSH4M3qXQ)
+具体原因参见: [MySQL 用 limit 为什么会影响性能？](https://mp.weixin.qq.com/s/Wtg9acg6M5q5kkSH4M3qXQ)
 这里进行个概述, 在执行SQL时, innodb会做如下两步:  
 ```shell
 第一步: 查询到索引叶子节点数据
