@@ -231,3 +231,61 @@ ERROR 1054 (42S22): Unknown column '_rowid' in 'field list'
   - 缺点: 
     - 导入数据需要单独安装[MySQL Shell](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-shell-install-macos-quick.html)
     - 数据集600MB, 下载速度实在是捉急.
+
+## MySQL Shell
+
+### 安装
+参照文档: [MySQL Shell](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-shell-install-macos-quick.html)
+mac上直接下载dmg安装就好
+
+### 使用
+
+- 使用 `mysqlsh` 命令进入到shell里
+
+```shell
+davywalkerdeMacBook-Pro:~ davywalker$ mysqlsh
+MySQL Shell 8.0.28
+
+Copyright (c) 2016, 2022, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > 
+```
+
+- 使用 `\connect` 命令连接数据库
+
+否则会报 `Util.loadDump: An open session is required to perform this operation. (RuntimeError)` 错误
+
+```shell
+ MySQL  JS > \connect root@localhost:3306
+Creating a session to 'root@localhost:3306'
+Please provide the password for 'root@localhost:3306':
+Your MySQL connection id is 31
+Server version: 8.0.26 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+```
+
+- enable `local_infile`
+
+否则会报如下错误
+```shell
+ERROR: The 'local_infile' global system variable must be set to ON in the target server, after the server is verified to be trusted.
+Util.loadDump: local_infile disabled in server (RuntimeError)
+```
+
+```shell
+mysql> set global local_infile=ON;
+Query OK, 0 rows affected (0.00 sec)
+```
+
+- 使用`util.loadDump`命令导入dump文件
+
+```shell
+ MySQL  localhost:3306 ssl  JS > util.loadDump("/Users/davywalker/Downloads/airport-db", {threads: 16, deferTableIndexes: "all", ignoreVersion: true})
+Loading DDL and Data from '/Users/davywalker/Downloads/airport-db' using 16 threads.
+Opening dump...
+NOTE: Dump format has version 1.0.2 and was created by an older version of MySQL Shell. If you experience problems loading it, please recreate the dump using the current version of MySQL Shell and try again.
+Target is MySQL 8.0.26. Dump was produced from MySQL 8.0.26-cloud
+```
