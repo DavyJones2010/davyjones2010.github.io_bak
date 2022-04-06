@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 记一次mysql unique index未生效原因排查
-tags: [learn-from-failure, mysql, index]
+tags: [learn-from-failure, mysql, index, insert-on-duplicate]
 lang: zh
 ---
 

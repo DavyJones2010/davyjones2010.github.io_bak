@@ -78,8 +78,15 @@ du -sh * | sort -nr | fgrep "G" | head
 
 * 查看端口被哪个进程占用了
 ```shell
-lsof -i:{port}
+lsof -i:${port}
+netstat -natp | fgrep ${port}
 ```
+
+* 根据进程号, 查看进程占用了哪些tcp端口
+```shell
+netstat -natp | fgrep ${pid}
+```
+
 * 查看进程信息:
 ```shell
 ps aux | fgrep ${pid}
