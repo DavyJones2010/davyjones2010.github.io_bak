@@ -21,8 +21,13 @@ lang: zh
 2. 在Mac上的Docker 
    1. 同样用虚拟化技术xhyve或者virtualbox来实现, 不共享mac os内核。
    2. 只能创建linux类docker，不能创建Mac OSX的docker. update 2022, [Docker-OSX](https://github.com/sickcodes/Docker-OSX) 项目可以了. 但本质上也是使用了KVM虚拟机.
-3. Running/Stopped的容器, 其镜像是不能被删除的(除非强制删除). 启动容器的时候, 需要重新使用镜像作为模板.
-4. Docker vs. VM
+3. Windows的Docker
+   1. 不能在Linux机器上使用windows的docker镜像. 参见: [can-windows-containers-be-hosted-on-linux](https://stackoverflow.com/questions/42158596/can-windows-containers-be-hosted-on-linux)
+      1. 因为docker在Linux上本质是使用了Linux HostOS的 `cgroups` `namespace` 等. 而Windows
+   2. 可以在Windows机器上使用Linux的docker镜像, 例如可以创建`alpine` `busybox` 等
+      1. 因为本质上是在Windows机器上创建了一个Linux的虚拟机, 而Linux的Docker全都是基于该虚拟机的. 
+4. Running/Stopped的容器, 其镜像是不能被删除的(除非强制删除). 启动容器的时候, 需要重新使用镜像作为模板.
+5. Docker vs. VM
 > 前台执行和后台执行的问题：
 Docker 不是虚拟机，容器中的应用都应该以前台执行，而不是像虚拟机、物理机里面那样，用 start / systemctl 去启动后台服务，容器内没有后台服务的概念。
 比如：如果我们将CMD 写成这样：
@@ -40,6 +45,7 @@ CMD ["nginx", "-g"," daemon off;"]
 2. Docker镜像在Host上存放的路径是哪里?
    1. MacOS: `~/Library/Containers/com.docker.docker/Data/vms/0/`
 3. Docker容器的生命周期是怎样的? 为啥Stop之后还需要Remove掉? 如果不Remove, 会怎样?
+4. 该选用哪个/哪种镜像作为基础系统镜像? 参见: [comparison-linux-container-images](http://crunchtools.com/comparison-linux-container-images/) 
 
 # 深入机制探讨与研究
 ## 镜像Cache机制
