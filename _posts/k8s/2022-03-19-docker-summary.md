@@ -41,7 +41,7 @@ CMD ["nginx", "-g"," daemon off;"]
 
 
 # 疑问与思考
-1. Docker容器中的多个进程, 在Host上看起来是怎样的? 
+1. Docker容器中的多个进程, [在Host上看起来是怎样的]()? 
 2. Docker镜像在Host上存放的路径是哪里?
    1. MacOS: `~/Library/Containers/com.docker.docker/Data/vms/0/`
 3. Docker容器的生命周期是怎样的? 为啥Stop之后还需要Remove掉? 如果不Remove, 会怎样?
