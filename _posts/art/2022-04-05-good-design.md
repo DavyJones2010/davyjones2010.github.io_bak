@@ -5,6 +5,10 @@ tags: [product-design, good-design]
 lang: zh
 ---
 
+# 前言
+代码, 架构, 逻辑, 产品, 设计等, 不应该是枯燥乏味的, 不应该是痛苦复杂的, 而应该是有趣的, 简单的, 应该是geek的, 应该是美的.
+这里记录下自己的点滴发现, 希望能走出CRUD与纷杂的业务逻辑, 逐渐提高一点审美与品味.
+
 # changelog优雅的格式
 - [taurus](https://gettaurus.org/docs/Changelog2020/#1-15-1sup-30-Oct-2020-sup)
 
@@ -32,4 +36,8 @@ lang: zh
 - 可以选择不同的filter, 虽然没啥卵用, 但感觉非常geek, 很有意思
 
 ![img_5.png](img_5.png)
+
+# RGB颜色的中文名称
+猛然发现
+
 
