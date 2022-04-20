@@ -92,10 +92,13 @@ for (int i = 0; i < 100; i++) {
 
 # AsyncHttpClient 参数适用场景
 ## 场景1: 与较少数量的Server, 通信频繁或者有大量数据要传输, 需要维持TCP长连接
-- 本质上来说就是当建立/维持TCP连接的成本高于传输成本时, 可以选择长连. 不论是TCP长连接, 还是HttpClient基于TCP的连接复用.
+- 本质上来说就是
+  - 当建立/维持TCP连接的成本高于传输成本时, 可以选择长连. 不论是TCP长连接, 还是HttpClient基于TCP的连接复用.
+  - 需要服务端需要不定期向客户端推送数据.
 - 实际场景: 
   - 大文件的下载(基于HTTP/TCP协议)
   - HTTP/1.1, 即访问某个网站时, 短时间内需要往该Host发送N多HTTP请求.
+  - K8S Watch机制, 使用的是HTTP Streaming机制或者WebSocket机制, 本质上还是TCP长连接.
 
 ```java
 allowPoolingConnections = true;
