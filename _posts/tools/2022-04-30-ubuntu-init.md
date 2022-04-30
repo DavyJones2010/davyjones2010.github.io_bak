@@ -168,3 +168,4 @@ Copy From [将maven源改为国内阿里云镜像](https://zhuanlan.zhihu.com/p/
 # 系统恢复软件
 越来越希望能做个类似Windows的Ghost系统，即把现在的系统以及软件以及配置都打包成一个系统镜像，这样后续换电脑，
 也能很方便地初始化自己的系统。省得重复安装与配置这么多东西。这个后续研究下吧。
+https://blog.csdn.net/leaf6094189/article/details/6009924
