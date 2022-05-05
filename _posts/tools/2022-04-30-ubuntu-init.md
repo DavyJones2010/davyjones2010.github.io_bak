@@ -13,7 +13,7 @@ tags: [ubuntu, system-init, system-config]
 本身自己惯用Mac，切换到Ubuntu应该也是无缝的。
 实际配置下来，发现软件齐全度比6年前自己使用时要多太多太多了，很开心。
 在上边玩儿docker就更方便了，更好地理解并且折腾清楚原理啦。
-注意，以下都是基于 Ubuntu 20.04.4 LTS 版本说明的。
+注意，以下都是基于 Ubuntu 20.04.4 LTS 版本(Focal Fossa)说明的。
 
 # 必要熟悉命令
 ## apt软件包管理
@@ -65,18 +65,37 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys xxx
 
 ## 效率
 
-* HomeBrew
+* 修改apt软件源
+
+```shell
+-- vim /etc/apt/sources.list
+deb http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://ftp.sjtu.edu.cn/ubuntu/ focal main universe restricted multiverse
+```
+
 * XMind
 * Gliffy Diagrams
-* Timeout --> ??
+* [gnomepomodoro](https://gnomepomodoro.org/)
 * ClashX --> QV2Ray
+* [坚果云](https://www.jianguoyun.com/s/downloads/linux)
+
 * 截图
+
 ```
-# 保存到 ~/Pictures/ 目录下
+-- 保存到 ~/Pictures/ 目录下
 Alt + PrintScreen # 截取选中的窗口
 Shift + PrintScreen # 自由选取
 
-# 保存到剪贴板
+-- 保存到剪贴板
 Ctrl + Alt + PrintScreen # 截取选中的窗口
 Shift + Ctrl + PrintScreen # 自由选取
 ```
