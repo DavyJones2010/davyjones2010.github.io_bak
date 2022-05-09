@@ -13,7 +13,7 @@ lang: zh
 依赖HeadlessService, 来为每个Pod分配:
 - 一个稳定的, 有序的hostname, hostname命名规则: ${StatefulSetName}-${idx}, ${idx}从0开始
 - 一条A记录, 从 ${hostname}.default.svc.cluster.local 到podIp的DNS解析
-- 如果是非HeadlessService, 则会生成一条 ${SvcName}.default.svc.cluster.local 到
+- 如果是非HeadlessService, 则会生成一条 ${SvcName}.default.svc.cluster.local 到 clusterIp 的DNS解析记录
 
 这样就保证了Pod销毁重建之后: 
 - 虽然podIp变化了, 但hostname能跟之前保持一致

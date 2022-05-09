@@ -13,6 +13,16 @@ lang: zh
 3. 容器看到自身的IP和外面看到它的IP必须是一样的, 即不存在IP转化的问题
 ```
 
+# k8s三类IP
+Kubernetes 集群内部存在三类 IP，分别是：
+
+```shell
+Node IP：宿主机的 IP 地址
+Pod IP：使用网络插件创建的 IP（如 flannel），使跨主机的 Pod 可以互通
+Cluster IP：虚拟 IP，通过 iptables 规则访问服务
+```
+安装 node 节点的时候，节点上的进程是按照 flannel -> docker -> kubelet -> kube-proxy 的顺序启动
+
 # 总结
 看了这么多文章, 终于理解了kube-proxy的深入原理以及发展历史:
 1. 本质上是运行在每个host上的proxy流量转发服务. 从集群内部发起时流量转发规则生效.

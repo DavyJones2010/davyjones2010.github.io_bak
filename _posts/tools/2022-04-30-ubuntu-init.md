@@ -51,6 +51,13 @@ sudo apt-get install openjdk-8-jdk
 
 * IntelliJ IDEA
 
+* nettools
+
+```shell
+sudo apt install net-tools traceroute
+-- 安装之后就可以执行 route -n 命令查看路由表信息，执行 traceroute 追踪实际路由信息
+```
+
 * Docker
 ```shell
 curl -sSL https://get.daocloud.io/docker | sh
