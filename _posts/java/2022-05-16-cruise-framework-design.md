@@ -1,9 +1,9 @@
-
 ---
 layout: post
 title: 一个通用数据巡检框架的设计
 tags: [java, software-engineering, best-practice, cruiser, software-design, arch]
 ---
+
 
 # 背景
 在实际项目中, 有许多业务场景, 会存在多张表数据不一致或者脏数据残留的问题, 
