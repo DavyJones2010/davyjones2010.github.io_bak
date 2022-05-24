@@ -12,14 +12,14 @@ tags: [java, spring, spring-jdbc, database, connection, transaction]
 > The point of suspending a transaction is to change the current transaction for a thread to a new one. This would NOT line up with the semantics of nested transactions because the new and suspended transactions are completely independent of each other. There is no connection-level API to support suspending transactions so this has to be done by using a different connection. If you are using JTA with Spring, this is done by the JTA transaction manager. If you are using DataSourceTransactionManager, you can look in the code and see that it will be saving off the current connection as a "suspended resource" and grabbing a new connection from the data source for the new transaction.
 
 
-[https://wiyi.org/physical-and-logical-transactions.html](https://wiyi.org/physical-and-logical-transactions.html)
-[https://wiyi.org/how-does-transaction-suspension-in-spring.html](https://wiyi.org/how-does-transaction-suspension-in-spring.html)
+- [https://wiyi.org/physical-and-logical-transactions.html](https://wiyi.org/physical-and-logical-transactions.html)
+- [https://wiyi.org/how-does-transaction-suspension-in-spring.html](https://wiyi.org/how-does-transaction-suspension-in-spring.html)
 
 ## 简化后的样例
 ### REQUIRES_NEW
-
 - 新建事务，如果当前存在事务，则把当前事务挂起
 - 这个方法会独立提交事务，不受调用者的事务影响，父级异常，它也是正常提交
+
 ```
 // 假定为REQUIRE_NEW传播类型
 // 1. 外部事务执行
@@ -46,6 +46,7 @@ conn.close();
 
 - 支持当前事务，如果当前没有事务，则新建事务
 - 如果当前存在事务，则加入当前事务，合并成一个事务
+
 ```
 // 假定为PROPAGATION_REQUIRED传播类型: 
 // 1. 支持当前事务，如果当前没有事务，则新建事务
@@ -80,12 +81,11 @@ conn.close();
 # 思考2: Druid连接池: 如何知道池中哪些connection在用, 哪些connection没在用?
 ## Druid实现:
 通常我们使用标准的对象池, 会有如下方法:
-
-
 1. Object borrow(): 即从池中借用对象, 从而该对象从池中移除, 不能再借给他人.
-1. return(Object obj): 即把对象归还给池子, 以便该对象能被其他人复用.
+2. return(Object obj): 即把对象归还给池子, 以便该对象能被其他人复用.
 
 但看标准的JDBC定义, 以及druid的实现, 发现只有如下定义, 即获取连接的定义.
+
 ```
 public interface DataSource {
   Connection getConnection();
@@ -95,12 +95,13 @@ public interface DataSource {
 看Druid连接池的实现
 
 1. getConnection(): 是从连接池中获取到一个可用的连接, 参见: com.alibaba.druid.pool.DruidDataSource#getConnectionInternal
-1. **但为什么没有归还方法呢? 如果没有归还方法, 那连接池就没有意义了呀!!**
-  1. 解惑: getConnection()拿到的是: DruidPooledConnection
-  1. 在 DruidPooledConnection.close() 的时候, 其实本质上不是将连接关闭, 而是将连接归还回了连接池!!
-    1. 这个设计还是挺巧妙的.
-  3. 那么真正销毁连接是在什么时候呢?
+2. **但为什么没有归还方法呢? 如果没有归还方法, 那连接池就没有意义了呀!!**
+   1. 解惑: getConnection()拿到的是: DruidPooledConnection
+   2. 在 DruidPooledConnection.close() 的时候, 其实本质上不是将连接关闭, 而是将连接归还回了连接池!!
+       1. 这个设计还是挺巧妙的.
+3. 那么真正销毁连接是在什么时候呢?
     1. 即整个连接池销毁的时候. DruidDataSource.close()
+
 ## 扩展: DBCP的数据库连接池是如何实现的?
 核心代码参见: org.apache.commons.dbcp.BasicDataSource
 
@@ -108,6 +109,7 @@ public interface DataSource {
 2. 依赖apache的commons.pool 架构整体比较优秀
 
 ### 从池中获取连接
+
 ```
 org.apache.commons.dbcp.BasicDataSource#createDataSource {
 	createConnectionPool(); // 1. 创建 GenericObjectPool 实例, 
@@ -116,7 +118,9 @@ org.apache.commons.dbcp.BasicDataSource#createDataSource {
   createDataSourceInstance(); // 3. 创建DbcpDataSource对象, 即该connectionpool
 }
 ```
+
 ### 将连接归还回池子
+
 ```
 // 1. 实际在池子里的connection是: 
 org.apache.commons.dbcp.PoolableConnection#PoolableConnection
@@ -207,5 +211,4 @@ public synchronized void close() throws SQLException {
 
         this.clear();
     }
-
 ```
