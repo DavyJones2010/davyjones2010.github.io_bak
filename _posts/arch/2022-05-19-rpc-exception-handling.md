@@ -9,7 +9,7 @@ lang: zh
 |---|---|---|---|
 | 客户端异常 | 客户端网络无连接, 闪断等  | TODO  |   |
 | 客户端异常 | SDK参数缺失, 校验异常等  |  TODO |   |
-| 服务端异常 | 系统异常(例如服务端限流, 处理超时等)  | IAcsClient抛出ClientException异常 |   |
-| 服务端异常 | 业务处理异常(例如服务端参数校验错误, 数量Quota被限制等)  | IAcsClient无异常, 返回的对象里, 有requestId, 但data为空, success=false  |   |
+| 服务端异常 | 系统异常(例如服务端限流, 处理超时等)  | IAcsClient抛出ServerException异常 |   |
+| 服务端异常 | 业务处理异常(例如服务端参数校验错误, 数量Quota被限制等)  | IAcsClient抛出ClientException异常  |   |
 
 
