@@ -127,8 +127,9 @@ Spring本身支持的 `@Transactional` annotation, 是可以打在interface上, 
 实际上, 也引发了很多讨论: 
 - [Where should I put @Transactional annotation: at an interface definition or at an implementing class?](https://stackoverflow.com/questions/3120143/where-should-i-put-transactional-annotation-at-an-interface-definition-or-at-a)
 - 文中推荐或者说Spring团队推荐 `@Transactional` 最好要打在`concrete classes`上, 而不要打在interface上.
-- 因为 <mark><font color='red'>如果使用的如果是JDK Based Proxy(or interface-based proxy), 则该annotation是不生效的!!!</font></mark>
-- 所以如果要用在interface上, 一定要知道当前使用的proxy是哪种. 而在实际上, 本身Spring/SpringBoot的默认proxy方式一直在变, 我们很难弄明确清楚(或者要弄清楚需要费很大劲儿). 下文会详细说明.
+- 因为 <mark><font color='red'>如果使用的如果不是JDK Based Proxy(or interface-based proxy), 则该annotation是不生效的!!!</font></mark>
+- 所以<mark>如果要用在interface上, 一定要知道当前使用的proxy是哪种.</mark> 
+- 而在实际上, 本身Spring/SpringBoot的默认proxy方式一直在变, 我们很难弄明确清楚(或者要弄清楚需要费很大劲儿). 下文会详细说明.
 
 ## SpringBoot中默认代理方式
 根据 [AOP in Spring Boot, is it a JDK dynamic proxy or a Cglib dynamic proxy?](https://www.springcloud.io/post/2022-01/springboot-aop/#gsc.tab=0) 文中说明, 

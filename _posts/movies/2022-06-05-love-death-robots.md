@@ -4,8 +4,9 @@ title: 爱死机第三季观后感
 tags: [movie, movie-list, 2022, love-death-robots]
 ---
 在这个阴雨连绵的端午, Netflix的爱死机第三季, 如期而至, 惊喜万分.
+不需要任何PPT大话, 这个NETFLIX的Logo在我心中就意味着 <mark>凡是出品, 必属竞品</mark>
+
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206051149708.png)
-不需要任何PPT大话, 这个Netflix的
 
 ---
 第一集, 例行的机器人来到已经荒废的地球, 参观了各个阶层人群在末日时刻的, 
@@ -17,5 +18,6 @@ tags: [movie, movie-list, 2022, love-death-robots]
 ![1-4](https://s2.loli.net/2022/06/05/QoUclBknD3W59wP.png)
 ![1-5](https://s2.loli.net/2022/06/05/zp3IlVw6Ai79fYv.png)
 
-最负盛誉的第九集, <Jibaro>
+---
+最负盛誉的第九集, Jibaro
 
