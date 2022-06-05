@@ -180,6 +180,7 @@ public long nestedHystrixWrappedGetCurrentThreadId() {
 # Code Samples
 - 后续尽量会在每个知识点里, 都增加对应的完整可运行的code sample, 便于各位学习研究.
 - 随着该问题的深入研究, 搞明白了asm, cglib, jdk dynamic proxy, aspectj等的关系, 愈发觉得还是得多搜索英文资料.
+- [本篇博文里完整的spring aop code sample](https://github.com/DavyJones2010/head-first-spring/tree/feature/20220603_annotation_on_interface)
 
 # Refs
 - [Aspect-Oriented Programming in Spring Boot Part 2: Spring JDK Proxies vs CGLIB vs AspectJ](https://www.credera.com/insights/aspect-oriented-programming-in-spring-boot-part-2-spring-jdk-proxies-vs-cglib-vs-aspectj)
