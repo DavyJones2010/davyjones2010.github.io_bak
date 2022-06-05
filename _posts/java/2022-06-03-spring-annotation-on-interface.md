@@ -69,6 +69,7 @@ Spring AOP Weaving是load time weaving, 即在Spring容器构建完所有的bean
  ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206051438400.png)
 
 - 再来思考下, 为啥不向上继续寻找? 这个就又回到了 第一个问题, Java Annotation的继承原则; 如果向上寻找, 有可能在同一层次找到多个同样的annotation, 但with不同的参数. 在这种情况下, Spring根本就不知道该以哪个为准了! 如下述例子: 
+
 ```java
 public @interface Perf {
     boolean print() default false;
