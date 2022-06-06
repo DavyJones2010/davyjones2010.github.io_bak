@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SpringBoot基于Interface的Annotation在AOP中如何生效II: @Transactional 实现原理研究 
+title: SpringBoot基于Interface的Annotation在AOP中如何生效II: Transactional 实现原理研究 
 tags: [java, spring, spring-boot, aop, interface, spring-tx]
 ---
 
