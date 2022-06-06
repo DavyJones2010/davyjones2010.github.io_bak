@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SpringBoot基于Interface的Annotation在AOP中如何生效
+title: SpringBoot基于Interface的Annotation在AOP中如何生效I: 基础概念
 tags: [java, spring, spring-boot, aop, interface]
 ---
 
@@ -35,6 +35,7 @@ SpringBoot项目代码里, 新增了一个 `@Perf` 的annotation, 希望增加�
 2. 为啥作用在interface层面的annotation不能被继承?
 因为java interface是多实现的.
 如果class同时实现了多个interface, 每个interface都实现同一个annotation(但对应annotation的参数不同), 那么当前class使用的该是哪个annotation(with参数)?
+这种场景下, 在OOP中术语叫做 [diamond inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem)
 
 3. 为啥作用在class层面的annotation可以被继承?
 因为java class是单继承的. 所以不会有interface的问题.
