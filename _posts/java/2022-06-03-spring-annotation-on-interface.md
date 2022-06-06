@@ -1,6 +1,6 @@
 ---
 layout: post
-title: SpringBoot基于Interface的Annotation在AOP中如何生效I: 基础概念
+title: SpringBoot基于Interface的Annotation在AOP中如何生效
 tags: [java, spring, spring-boot, aop, interface]
 ---
 
