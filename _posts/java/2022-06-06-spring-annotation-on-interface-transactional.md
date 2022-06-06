@@ -56,7 +56,7 @@ public interface MethodInterceptor extends Interceptor {
 
 - Advisor or Aspect, 就是 JoinPoint + Advice, 同时需要作为bean注册在Spring中, 方便Spring容器启动时, 执行`从Spring Context里找到所有Advisors`步骤.
 - `@Transactional` 使用的是: `org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor`
-- 所以我们一般
+- 所以我们一般都会在 Aspect 上打上 @Aspect + @Component 的标签
 
 ## 完整样例
 
