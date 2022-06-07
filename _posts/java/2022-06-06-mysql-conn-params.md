@@ -8,7 +8,7 @@ tags: [java, mysql, database, connection-pool, druid]
 - initialSize: 初始化时connection数量, 每个connection实际是一条与DB的TCP连接
 - maxActive: 最大连接池数量, 对应于maxPoolSize
 - minIdle: 最小连接池数量, 对应与minPoolSize
-- maxWait: 获取连接等待超时的时间, 具体详解参见: [maxWait参数详解](# maxWait参数详解)
+- maxWait: 获取连接等待超时的时间, 具体详解参见: [maxWait参数详解](#maxWait参数详解)
 - timeBetweenEvictionRunsMillis: 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
 - minEvictableIdleTimeMillis: 配置一个连接在池中最小生存的时间，单位是毫秒
 - maxEvictableIdleTimeMillis:  配置一个连接在池中最大生存的时间，单位是毫秒
