@@ -58,6 +58,14 @@ public interface MethodInterceptor extends Interceptor {
 - `@Transactional` 使用的是: `org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor`
 - 所以我们一般都会在 Aspect 上打上 @Aspect + @Component 的标签
 
+## 4. @Transactional 的AdvisorBean初始化&组装
+
+- 代码位置: `org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration#transactionAdvisor`
+- 本质是在 `@Configuration` 里通过 `@Bean` new出Bean
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206072232406.png)
+
+
+
 ## 完整样例
 
 - 如下样例: 

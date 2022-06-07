@@ -95,10 +95,10 @@ public class FilterA implements Filter, AnotherFilter {
 
 再回到最初的问题, 如何能解决该问题?
 
-## 方案1:
+## 方案1: 打在子类方法上
 将`@Perf`打在各个子类的实现里, 缺点是: 非常麻烦, 后续有其他子类, 都需要记得打上annotation.
 
-## 方案2:  
+## 方案2: 修改pointcut条件
 不使用annotation作为pointcut的匹配条件, 而采用如下表达式:
 `@Around("execution(public * edu.xmu.kunlun.headfirst.spring.service.Filter+.doFilter(..))")`
 
@@ -106,9 +106,90 @@ public class FilterA implements Filter, AnotherFilter {
 - 缺点: 如果有其他接口例如`edu.xmu.kunlun.headfirst.spring.service.Weighter`的所有实现需要被增强, 则需要修改pointcut表达式, 不方便. 
 - [代码样例 edu.xmu.kunlun.headfirst.spring.aspect.PerfAspect2](https://github.com/DavyJones2010/head-first-spring/blob/feature/20220603_annotation_on_interface/src/main/java/edu/xmu/kunlun/headfirst/spring/aspect/PerfAspect2.java)
 
+## 方案3: 自定义实现pointcut
+参照Spring Transactional能力, 自己实现新的Advisor, 其中最主要是修改pointcut
+
+- 第一步: 创建自定义pointcut: [edu.xmu.kunlun.headfirst.spring.aspect2.PerfAdvisor#pointcut](https://github.com/DavyJones2010/head-first-spring/blob/feature/20220603_annotation_on_interface/src/main/java/edu/xmu/kunlun/headfirst/spring/aspect2/PerfAdvisor.java)
+
+```java
+private final StaticMethodMatcherPointcut pointcut = new StaticMethodMatcherPointcut() {
+    @Override
+    public boolean matches(Method method, Class<?> targetClass) {
+        // 直接使用spring工具包，来获取method上的注解（会找父类上的注解）
+        return AnnotatedElementUtils.hasAnnotation(method, Perf2.class);
+    }
+};
+```
+
+- 第二步: 创建自定义advice: [edu.xmu.kunlun.headfirst.spring.aspect2.PerfInterceptor](https://github.com/DavyJones2010/head-first-spring/blob/feature/20220603_annotation_on_interface/src/main/java/edu/xmu/kunlun/headfirst/spring/aspect2/PerfInterceptor.java)
+
+```java
+public class PerfInterceptor implements MethodInterceptor {
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        long start = System.currentTimeMillis();
+        String className = invocation.getThis().getClass().getName();
+        String methodName = invocation.getMethod().getName();
+        System.out.println(className + "." + methodName + " start on PerfInterceptor");
+        Object o = null;
+        try {
+            o = invocation.proceed();
+        } finally {
+            System.out.println(className + "." + methodName + " on PerfInterceptor" + " finished cost: " + (System.currentTimeMillis() - start));
+        }
+        return o;
+    }
+}
+```
+
+- 第三步: 创建自定义advisor, 并且以bean形式暴露给Spring容器: [edu.xmu.kunlun.headfirst.spring.aspect2.PerfAdvisor](https://github.com/DavyJones2010/head-first-spring/blob/feature/20220603_annotation_on_interface/src/main/java/edu/xmu/kunlun/headfirst/spring/aspect2/PerfAdvisor.java)
+
+```java
+@Component
+public class PerfAdvisor extends AbstractBeanFactoryPointcutAdvisor {
+    private final StaticMethodMatcherPointcut pointcut = new StaticMethodMatcherPointcut() {
+        @Override
+        public boolean matches(Method method, Class<?> targetClass) {
+            // 直接使用spring工具包，来获取method上的注解（会找父类上的注解）
+            return AnnotatedElementUtils.hasAnnotation(method, Perf2.class);
+        }
+    };
+    private final Advice advice = new PerfInterceptor();
+    @Override
+    public Pointcut getPointcut() {
+        return pointcut;
+    }
+    @Override
+    public Advice getAdvice() {
+        return advice;
+    }
+}
+```
+
+
+- 第四步: 测试: [edu.xmu.kunlun.headfirst.spring.aspect2.Perf2Test](https://github.com/DavyJones2010/head-first-spring/blob/feature/20220603_annotation_on_interface/src/test/java/edu/xmu/kunlun/headfirst/spring/aspect2/Perf2Test.java) 
+
+```java
+@SpringBootTest
+public class Perf2Test {
+    @Autowired
+    FilterChain chain;
+
+    @Test
+    void name() {
+        chain.filterAll();
+    }
+}
+```
+
+
 ## 最终方案:
-如上分析Spring AOP相关源码, 没有找到更好的方案了. 这也是避免后续踩坑的最佳实践了. 
-个人使用 `方案1` 作为了最终方案.
+如上分析Spring AOP相关源码
+- `方案3: 自定义实现pointcut` 虽然可以满足要求, 但存在两个问题: 
+  - 性能问题: 核心使用的`AnnotatedElementUtils.hasAnnotation(method, Perf2.class);`, 性能可能不佳
+  - 逻辑问题: 针对`Diamond Inheritance`场景, 结果会很奇怪, 不符合预期
+- 这也是避免后续踩坑的最佳实践了. 
+- 个人使用 `方案1` 作为了最终方案.
 
 # 扩展思考
 ## Spring接口层面支持的 @Transactional annotation
