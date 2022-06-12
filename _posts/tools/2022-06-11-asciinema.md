@@ -3,6 +3,7 @@ layout: post
 title: asciinema使用笔记
 subtitle: asciinema, 一款好用的全平台兼容的Terminal录屏工具使用笔记
 cover-img: ["https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122039785.svg"]
+thumbnail-img: ["https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122039785.svg"]
 tags: [mac, tools, asciinema, svg]
 ---
 
