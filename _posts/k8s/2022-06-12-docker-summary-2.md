@@ -23,7 +23,7 @@ sudo ls -l /proc/$pid/ns
 
 核心代码如下: 
 
-```set_ns.c
+```shell
 int main(int argc, char *argv[]){
 	int fd;
 	fd = open(argv[1], O_RDONLY);
