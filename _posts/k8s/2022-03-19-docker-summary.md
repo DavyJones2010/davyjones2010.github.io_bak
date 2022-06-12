@@ -147,7 +147,7 @@ RUN yum install -y gcc make cmake \
 ## 容器
 容器生命周期
 --- 
-![img_4.png](img_4.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122132089.png)
 
 容器命令
 ---
