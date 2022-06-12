@@ -4,7 +4,7 @@ title: 爱死机第三季观后感
 tags: [movie, movie-list, 2022, love-death-robots]
 ---
 在这个阴雨连绵的端午, Netflix的爱死机第三季, 如期而至, 惊喜万分.
-不需要任何PPT大话, 这个NETFLIX的Logo在我心中就意味着 <mark>凡是出品, 必属竞品</mark>
+不需要任何PPT大话, 这个NETFLIX的Logo在我心中就意味着 <mark>奈飞出品, 必属竞品</mark>
 
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206051149708.png)
 

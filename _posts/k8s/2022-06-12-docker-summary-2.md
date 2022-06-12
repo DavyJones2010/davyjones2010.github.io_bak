@@ -81,3 +81,43 @@ sudo umount test
 ```
 
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122208304.svg)
+
+
+# 单机容器网络原理
+
+## 原理概述
+
+> 本质是通过 docker0网桥 + VethPair 实现单机间多个docker容器互联
+
+- docker0网桥 工作在数据链路层. 类似一个虚拟交换机. 维护 CAM表(交换机通过MAC地址学习维护的 端口与MAC地址的对应表)
+- 各个容器通过 VethPair 与docker0网桥连接
+- 从host->container, 路由规则, 需要通过 docker0 网桥; docker0网桥查询CAM表, 直接把请求转发到相应端口即可.
+- 从container -> container, 通过 veth pair 到达 docker0 网桥; docker0网桥查询CAM表, 直接把请求转发到相应端口即可.
+
+## 常用命令
+
+- 查看网桥信息
+
+```shell
+brctl show
+```
+
+- 查看路由表
+
+```shell
+route
+```
+
+
+## 实例演示
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122305851.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122305137.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122305508.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206122305564.png)
+
+
+
+
+
+
