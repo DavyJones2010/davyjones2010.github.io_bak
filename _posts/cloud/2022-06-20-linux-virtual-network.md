@@ -34,7 +34,6 @@ tags: [linux, network, cloud-computing, iaas]
 ## 常用命令
 
 - 网桥操作
-
 ```shell
 brctl show
 ```
