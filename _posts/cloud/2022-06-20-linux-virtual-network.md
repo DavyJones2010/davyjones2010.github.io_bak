@@ -5,7 +5,7 @@ subtitle: Linux虚拟网络与网络设备
 tags: [linux, network, cloud-computing, iaas]
 ---
 
-# 北京
+# 背景
 使用VMWare或者KVM设置VM网络时, 通常会有几种网络模式: 
 - 网桥模式(Bridge模式)
 - NAT模式
