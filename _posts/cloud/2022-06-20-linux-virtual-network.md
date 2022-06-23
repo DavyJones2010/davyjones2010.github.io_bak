@@ -2,7 +2,7 @@
 layout: post
 title: Linux虚拟网络与网络设备
 subtitle: Linux虚拟网络与网络设备
-tags: [linux, network, cloud-computing, iaas]
+tags: [linux, network, cloud-computing, iaas, nat, pat]
 ---
 
 # 背景
@@ -58,7 +58,8 @@ yum install bridge-utils -y
 ## 特点
 因此
 1. VM的IP与Host的IP不在同一个网段
-2. VM在网络中的位置是从属于Host的
+2. VM在网络中的位置是从属于Host
+
 ![VM在192.168.230.0/24网段](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206202159960.png)
 ![Host在192.168.3.0/24网段](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202206202200319.png)
 
