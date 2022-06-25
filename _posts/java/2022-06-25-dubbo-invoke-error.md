@@ -21,13 +21,11 @@ tags: [java, dubbo]
 
 1. 是否正确依赖到了provider?
     1. 通过查看 tcp ESTABLISHED 连接确定长连接已经建立.
-
 ![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18490/1655284359565-30515430-8153-4ad4-b4dd-234d9df55fea.png#clientId=u4516ba17-e220-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=86&id=u4c7b6362&margin=%5Bobject%20Object%5D&name=image.png&originHeight=172&originWidth=1651&originalType=binary&ratio=1&rotation=0&showTitle=false&size=233779&status=done&style=none&taskId=uda8b84cd-5b1c-4047-ba2d-d2f8969c8e9&title=&width=825.5)
-
-2. or 查看registry下发的 dubbo config 文件?  --> TODO: 暂时没找到, 待分析.
+    2. or 查看registry下发的 dubbo config 文件?  --> TODO: 暂时没找到, 待分析.
 2. 请求是否正确路由到了provider的host?  // 由于systemB有多套环境, 怀疑是请求路由到了非目标环境.
     1. 动态分析: 查看 dubbo 请求日志 --> 没找到, 待进一步查看.
-    1. 静态分析: 查看 diamond 配置 + 相关代码, 是不是路由代码有误?
+    2. 静态分析: 查看 diamond 配置 + 相关代码, 是不是路由代码有误?
 
 ## 0x02 真实错误原因
 
