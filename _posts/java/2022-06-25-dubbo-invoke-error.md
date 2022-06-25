@@ -170,6 +170,7 @@ sudo lsof -i -P| fgrep ${PID} | fgrep LISTEN
 3. 看到如下, 一般dubbo端口号是从20880开始的(包括20880)
 
 ![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18490/1656071104745-f45d2de3-b2b2-4d78-ae89-0675340d9ee5.png#clientId=uef905f9f-0d81-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=135&id=u402dafbd&margin=%5Bobject%20Object%5D&name=image.png&originHeight=270&originWidth=1043&originalType=binary&ratio=1&rotation=0&showTitle=false&size=168048&status=done&style=none&taskId=ud84ecbbe-e92b-4cb8-8f22-ef8eb38a665&title=&width=521.5)
+
 但如果应用配置的dubbo端口很奇怪, 不符合惯例, 那这里就只能一个一个端口来telnet试试了.
 > 这种方式不算非常直接, 但优点是可以不用去翻找代码, 翻找配置项. 在端口数很少的情况下, 简单有效.
 
