@@ -75,7 +75,7 @@ serialization="json" />
 ![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18490/1655285386034-f8be5e2b-2de5-4e78-8e10-78f7f5ed8a33.png#clientId=ue56d11e5-0788-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=306&id=u555b0ff2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=612&originWidth=1750&originalType=binary&ratio=1&rotation=0&showTitle=false&size=501684&status=done&style=none&taskId=u4f4d6297-906c-4f0e-920a-b6ca023684a&title=&width=875)
 [如何快速查看某个host的某个interface有没有把某个method暴露出去](#dubbo如何查到某台host中某个接口提供的所有方法)
 
-2. consumer侧排查时, 由于openapi的dubbo console的端口与ebs的dubbo console 端口不一致, 也查了半天.
+2. consumer侧排查时, 由于systemA的dubbo console的端口与systemB的dubbo console 端口不一致, 也查了半天.
 [如何快速查到dubbo console端口号?](#dubbo如何查看console的端口)
 
 ## Dubbo最佳实践
@@ -104,7 +104,7 @@ protocol="dubbo-core" version="${pbs.service.version}" ref="sampleService" retri
 ```
 
 ### dubbo默认端口号配置原则
-如上, `pbs.dubbo.protocol.default.port=-1`配置项, 按照dubbo文档说明, 应该是随机分配一个端口. 但发现EBS实际启动后, 却开启了 20880 端口. 这是为啥?
+如上, `pbs.dubbo.protocol.default.port=-1`配置项, 按照dubbo文档说明, 应该是随机分配一个端口. 但发现systemB实际启动后, 却开启了 20880 端口. 这是为啥?
 #### 官方文档
 根据 [https://dubbo.apache.org/zh/docs/references/xml/dubbo-protocol/](https://dubbo.apache.org/zh/docs/references/xml/dubbo-protocol/)  文档说明,  `分配的端口在协议缺省端口的基础上增长`
 但实际语焉不详, dubbo协议默认端口是20880,  那么如果配置 `port=-1`, 则端口是 `20880` or `20881`??
