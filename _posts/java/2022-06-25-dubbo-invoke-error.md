@@ -25,7 +25,7 @@ tags: [java, dubbo]
 ![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18490/1655284359565-30515430-8153-4ad4-b4dd-234d9df55fea.png#clientId=u4516ba17-e220-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=86&id=u4c7b6362&margin=%5Bobject%20Object%5D&name=image.png&originHeight=172&originWidth=1651&originalType=binary&ratio=1&rotation=0&showTitle=false&size=233779&status=done&style=none&taskId=uda8b84cd-5b1c-4047-ba2d-d2f8969c8e9&title=&width=825.5)
 
 2. or 查看registry下发的 dubbo config 文件?  --> TODO: 暂时没找到, 待分析.
-2. 请求是否正确路由到了provider的host?  // 由于ebs有多套环境, 怀疑是请求路由到了非目标环境.
+2. 请求是否正确路由到了provider的host?  // 由于systemB有多套环境, 怀疑是请求路由到了非目标环境.
     1. 动态分析: 查看 dubbo 请求日志 --> 没找到, 待进一步查看.
     1. 静态分析: 查看 diamond 配置 + 相关代码, 是不是路由代码有误?
 
@@ -176,7 +176,7 @@ sudo lsof -i -P| fgrep ${PID} | fgrep LISTEN
 > 这种方式不算非常直接, 但优点是可以不用去翻找代码, 翻找配置项. 在端口数很少的情况下, 简单有效.
 
 
-## Refs
+# Refs
 
 - [Dubbo Serialize 层：多种序列化算法，总有一款适合你](https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/Dubbo%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB%E4%B8%8E%E5%AE%9E%E6%88%98-%E5%AE%8C/16%20%20Dubbo%20Serialize%20%E5%B1%82%EF%BC%9A%E5%A4%9A%E7%A7%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%AE%97%E6%B3%95%EF%BC%8C%E6%80%BB%E6%9C%89%E4%B8%80%E6%AC%BE%E9%80%82%E5%90%88%E4%BD%A0.md)
 
