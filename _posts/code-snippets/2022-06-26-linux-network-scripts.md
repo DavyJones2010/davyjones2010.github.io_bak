@@ -237,6 +237,7 @@ traceroute to 220.181.38.148 (220.181.38.148), 30 hops max, 60 byte packets
 ```
 
 - 使用ICMP协议进行traceroute
+
 ```shell
 davywalker@davywalker-ThinkPad-X1-Carbon-4th:~/Downloads$ traceroute -I 220.181.38.148
 traceroute to 220.181.38.148 (220.181.38.148), 30 hops max, 60 byte packets
