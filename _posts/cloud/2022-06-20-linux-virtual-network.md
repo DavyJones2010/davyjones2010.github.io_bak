@@ -9,6 +9,7 @@ tags: [linux, network, cloud-computing, iaas, nat, pat]
 使用VMWare或者KVM设置VM网络时, 通常会有几种网络模式: 
 - 网桥模式(Bridge模式)
 - NAT模式
+
 之前一直比较迷惑, 不是特别清楚区别, 最近研究终于搞懂了, 总结如下: 
 
 # 网桥模式
@@ -47,7 +48,6 @@ yum install bridge-utils -y
 - 配置
 
 
-
 # NAT模式
 ## 本质
 1. 本质上是Host看做一个NAT设备
@@ -68,5 +68,15 @@ yum install bridge-utils -y
 
 
 
+## 其他注意事项
+这里 VM的网桥模式 与 docker的网桥/Bridge模式 是有很大区别的。
+- VM 网桥/桥接模式: VM与HOST在同一个网段。
+- Docker Bridge模式： Docker容器与HOST不在同一个网段。
+> Bridge 是 docker 默认的网络模式。
+> 原理跟 vmware 的 NAT 模式相同。
+> 安装 docker 时，会给宿主机创建一个 docker0 网卡，该网卡会与一个虚拟交换机相连，
+> 当容器以 Bridge 模式创建启动时，会给容器创建一个虚拟网卡，该网卡分配的 IP 与宿主机的 docker0 所在同一个局域网内 (一般是 172.16.0.0)。
+> 然后过程就和 vmware 的 NAT 模式完全相同。
 
-
+# Refs
+- [ Vmware和Docker的网络模式讲解](https://learnku.com/docs/go-micro-build/1.0/explain-the-network-mode-of-vmware-and-docker/8879)
