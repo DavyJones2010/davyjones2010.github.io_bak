@@ -16,8 +16,6 @@ author: Davy Walker
 navbar-links:
   Archives: "archives"
   About Me: "aboutme"
-  Resources:
-    - Learn markdown: "https://www.markdowntutorial.com/"
   Git: "https://github.com/DavyJones2010/davyjones2010.github.io"
 
 # --- Logo --- #
