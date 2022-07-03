@@ -12,7 +12,7 @@ tags: [linux, network, cloud-computing, iaas, nat, pat]
 
 - 啥是网卡混杂模式？
 - 正常情况下，在网卡收到二层帧之后，会查看TargetMac是否与自身的Mac地址相同，如果不同，则丢弃该帧。
-- 开启了混杂模式之后
+- 开启了混杂模式之后，即使MAC地址不匹配，也不会丢弃。还是会进入TCP/IP协议栈处理。
 
 - 啥时候需要开启？
 - // TODO:
