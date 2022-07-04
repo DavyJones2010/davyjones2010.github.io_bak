@@ -212,3 +212,13 @@ String hostname = ip.getHostName();
 
 
 # HTTP 代理
+
+# 什么是"冷土豆路由"与"热土豆路由"?
+- 参见: [冷土豆路由&热土豆路由](https://docs.microsoft.com/zh-cn/azure/virtual-network/ip-services/routing-preference-overview)
+- 热土豆:
+  - 入口流量: 如果来自新加坡的用户访问托管在芝加哥的 Azure 资源，则流量将通过公共 Internet 传输，并进入芝加哥的 Microsoft 全球网络。
+  - 出口流量: 出口流量遵循相同的原则。 流量会在托管服务的同一区域退出 Microsoft 网络。 例如，如果来自 Azure 芝加哥服务的流量最终传输给来自新加坡的用户，流量将离开芝加哥的 Microsoft 网络，并通过公共 Internet 传输给新加坡的用户。
+- 冷土豆:
+  - 入口流量: 如果来自新加坡的用户访问托管在美国芝加哥的 Azure 资源，则流量将进入位于新加坡 Edge POP 的 Microsoft 全球网络，并通过 Microsoft 网络传输到托管在芝加哥的服务。
+  - 出口流量: 如果来自 Azure 芝加哥的流量最终传输给来自新加坡的用户，那么流量就会通过 Microsoft 网络从芝加哥传输到新加坡，并退出位于新加坡 Edge POP 的 Microsoft 网络。
+  
