@@ -78,7 +78,8 @@ public static class CommonCallback extends AsyncCompletionHandler {
   }
 }
 ```
-![img_1.png](img_1.png)
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042218576.png)
 
 ### 当设置了maxConnectionsPerHost时, allowPoolingConnections最好设置为true, 并且请求最好不要瞬时并发
 否则如下例子, 请求就不会排队了, TCP连接也无法重用, 直接进入了Handler的`onThrowable()`方法里

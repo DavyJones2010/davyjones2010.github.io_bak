@@ -14,7 +14,7 @@ tags: [dubbo, java, perf-tunning, redis]
 目标RT: 100ms-
 
 ## 整体架构
-![img_2.png](img_2.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042216549.png)
 
 ## 应用框架
 - SpringBoot 2.5.6
@@ -30,13 +30,14 @@ tags: [dubbo, java, perf-tunning, redis]
 ## 中间件配置清单
 
 ### Redis
-- 规格：
+- 规格：8C32GB
 - 支持的最大连接数量：30000
 - Host到Redis的Ping延时在1ms以内
 
 ### DB/RDS
-- 规格：
-- 支持的最大连接数量：
+- 规格：mysql.x4.4xlarge.2 32C128GB
+- MySQL 5.7
+- 支持的最大连接数量：20000
 - Host到DB的Ping延时在1ms以内
 
 
@@ -87,7 +88,8 @@ tags: [dubbo, java, perf-tunning, redis]
 > 因为 SpringBoot 1.5.x 版本默认使用Jedis作为redis client，比较好调整connection数量等。<br/>
 > 但 SpringBoot 2.x 版本默认使用了Lettuce作为redis client，本身基于Netty的异步IO方式实现，与Jedis不同，本身就支持单个连接被多个线程同时访问。
 > 所以官方不建议配置连接池。
-![](46038CFA-4B71-4D0C-8179-E3122EA51192.png)
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042214249.png)
 
 - 其他问题优化
   - 自己重新实现了一版Pair类型的序列化、反序列化方式
@@ -136,10 +138,10 @@ tags: [dubbo, java, perf-tunning, redis]
 
 
 ### 原因分析
-![](A601F4C4-F906-4CF5-9C18-69D3C01E0E2B.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042215103.png)
 根据当时的线程堆栈分析，占用CPU量最大的就是8个lettuce线程，几乎把CPU时间片占满了。
 同时搜索了相关问题 ，发现[不是个例](https://gitter.im/lettuce-io/Lobby?at=5de8f93446397c721c8ed8ed)。
-![](F3AF87CD-4535-428E-93CB-C66F2F8BA03B.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042215636.png)
 
 ### 优化方案
 - Redis:
@@ -188,12 +190,12 @@ spring.redis.jedis.pool.max-wait=10000
 
 
 #### 异步线程队列满问题
-![](D165C3E7-BA16-4F60-9B5C-E9A9958722A8.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042216269.png)
 隊列默認長度爲200，在200的長度滿了之後，使用的是`ThreadPoolExecutor.CallerRunsPolicy`, 即不再在異步線程裏執行，而是在caller線程中執行。
 從而導致業務線程壓力進一步增大。
 
 #### Log4j日志问题
-![](AAEEB3FC-5527-449E-9868-23E338C5BB8D.png)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042216085.png)
 也是比較經典的問題，使用Log2j的異步logger即可解決。
 
 ### 优化方案
