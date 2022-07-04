@@ -181,7 +181,7 @@ spring.redis.jedis.pool.max-wait=10000
 | Jedis執行      | 2 |
 
 - 大部分线程卡在Druid数据库连接池归还连接、获取连接的搶鎖阶段（lock()）
-- 小部分线程由于bind()异步线程池队列满，导致
+- 小部分线程由于bind()异步线程池队列满，导致占用了业务线程
 - 最后一部分线程卡（blocked）在log4j打印日志
 
 
