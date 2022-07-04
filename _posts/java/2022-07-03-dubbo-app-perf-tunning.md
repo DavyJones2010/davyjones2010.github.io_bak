@@ -191,6 +191,7 @@ spring.redis.jedis.pool.max-wait=10000
 
 #### 异步线程队列满问题
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207042216269.png)
+
 隊列默認長度爲200，在200的長度滿了之後，使用的是`ThreadPoolExecutor.CallerRunsPolicy`, 即不再在異步線程裏執行，而是在caller線程中執行。
 從而導致業務線程壓力進一步增大。
 
