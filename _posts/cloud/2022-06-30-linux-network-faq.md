@@ -193,12 +193,39 @@ String hostname = ip.getHostName();
 - IPVS 转发模式为非 NAT 模式时，则将数据包由 POST-ROUTING 链发送给真实服务器。
 
 ### LVS的几种模式分析
-#### LVS-NAT
-类似iptables的端口映射(PAT)
-- Client请求: {CIP, DIP}
-- LVS映射: 修改目标IP, DIP->RIP, 构建新的请求: {CIP, RIP}
+
+[linux LVS负载均衡原理 NAT DR TUN FULLNAT 模式](https://blog.csdn.net/Splend520/article/details/104587149)
+
+#### LVS-NAT --> NAT/DNAT
+本质是类似iptables的端口映射(PAT)--> 注意这里全程没有DIP的参与.
+- LVS本身有两个IP, 对外是VIP, 对内是DIP(Director IP)
+- Client请求: {CIP, VIP}
+- LVS映射: 修改目标IP, VIP->RIP, 构建新的请求: {CIP, RIP}
 - Server处理: 完成后发送回包, {RIP, CIP}; 由于CIP与RIP不在同一个网段, 因此发送到网关(即LVS)
-- LVS映射: 修改源IP, RIP->DIP, 构建新的响应: {DIP, CIP}
+- LVS映射: 修改源IP, RIP->VIP, 构建新的响应: {VIP, CIP}
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207052223099.png)
+
+- 缺点: 
+  - 需要RS与DS在同一个二层网络里, 且需要把DS/DIP配置为RS的网关.
+- 优点: 
+  - // TODO:
+
+#### LVS-NAT --> FullNAT
+- LVS本身有两个IP, 对外是VIP, 对内是DIP(Director IP)
+- Client请求: {CIP, VIP}
+- LVS映射: 修改目标IP, VIP->RIP(RealServerIP); 修改源IP, CIP->DIP; 构建新的请求: {DIP, RIP}
+- RealServer处理: 完成后发送回包, {RIP, DIP} (FullNAT模式, 不需要LVS必须是网关, 只要三层IP可达即可)
+- LVS映射: 修改源IP, RIP->VIP; 通过conntrack查表, 修改目标IP, DIP->CIP; 构建新的响应: {VIP, CIP}
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207052218872.png)
+
+- 注意: LVS 本身不支持 FULLNAT 模式，需要额外对内核打补丁后才能使用。
+
+- 缺点: 
+  - 不管是请求数据包还是响应数据包，都要经过负载均衡器。但是响应数据包一般要比请求数据包大很多，这可能会成为系统的瓶颈。
+- 优点:
+  - 如上图, RealServer(DIP)不需要跟LVS在同一个网段, 只要IP包(三层路由)可达, 就能完成FullNAT
 
 #### LVS-DR
 
