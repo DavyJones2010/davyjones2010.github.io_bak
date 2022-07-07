@@ -44,6 +44,12 @@ lang: zh
 
 2. 如何防止多个线程同时触发该item从processing->finished/init的变迁? 参见方案1中锁/事务的方式
 
+## 方案3: 优雅停机
+1. 在shutdown-hook里注册事件:
+   1. 将状态改回init. --> required.
+   2. 将worker线程interrupt掉. --> optional, 因为即使不interrupt, 进程停止线程也会被回收.
+2. 但该方案有很大的缺陷, 如果直接`kill -9`, 则shutdown-hook根本不会执行.
+
 ## 最终方案
 最终采用了方案2, 因为从状态机中删除掉一个终态, 对现有代码改造量太大了.
 
