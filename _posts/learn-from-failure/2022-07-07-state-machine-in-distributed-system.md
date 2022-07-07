@@ -35,6 +35,7 @@ lang: zh
    2. 执行后修改状态为finished, commit事务.
    3. item执行异常中断(例如服务器重启, 线程crash等): 事务自动回滚. 由于仍然是init状态(终态), 因此可以重新人肉触发, 新的线程抢到锁, 重新执行.
    4. item执行失败: 主动回滚事务. 由于仍然是init状态(终态), 因此可以重新人肉触发, 新的线程抢到锁, 重新执行.
+
 ## 方案2: 状态机设计修改: 把processing作为纯粹的终态
   1. 需要设计从processing->finished/init的人肉触发入口. 
   2. 如何防止多个线程同时触发该item从processing->finished/init的变迁? 参见方案1中锁/事务的方式
