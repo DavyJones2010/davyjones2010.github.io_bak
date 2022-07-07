@@ -24,7 +24,9 @@ lang: zh
 - 一条原则: <mark>终态->终态之间, 必须是可以人肉有入口触发的(而不是系统自动触发的); 必须是可重入的.</mark>
 
 ## 方案1: 状态机设计修改: 把processing作为纯粹的中间状态
-1. 将processing从状态机中删除掉; 
+1. 将processing从状态机中删除掉, 如下: 
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207072351350.png)
+
 2. 使用 分布式锁/db字段锁 来实现排他功能(即item同时只能被一个线程处理, 防止多个线程同时处理一个item导致死锁/重复计算等问题).
    1. 在item执行前, 加上锁+锁超时时间(如例子中的10min); 其他线程要执行时, 无法抢到该item的锁. 
    2. item执行完成之后, 状态修改为finished之后, 再释放掉item锁.
@@ -37,8 +39,10 @@ lang: zh
    4. item执行失败: 主动回滚事务. 由于仍然是init状态(终态), 因此可以重新人肉触发, 新的线程抢到锁, 重新执行.
 
 ## 方案2: 状态机设计修改: 把processing作为纯粹的终态
-  1. 需要设计从processing->finished/init的人肉触发入口. 
-  2. 如何防止多个线程同时触发该item从processing->finished/init的变迁? 参见方案1中锁/事务的方式
+1. 需要设计从processing->finished/init的人肉触发入口.
+   ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207072354738.png)
+
+2. 如何防止多个线程同时触发该item从processing->finished/init的变迁? 参见方案1中锁/事务的方式
 
 ## 最终方案
 最终采用了方案2, 因为从状态机中删除掉一个终态, 对现有代码改造量太大了.
