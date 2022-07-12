@@ -17,23 +17,23 @@ lang: zh
 
 1. 获取当前时间(2013-10-04 21:59:42)的毫秒表示：1380895182327 用二进制表示为：
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622793730521-13509340-00a3-49f9-a04f-42e6e83a0a8b.png#crop=0&crop=0&crop=1&crop=1&height=139&id=u45efcfc1&margin=%5Bobject%20Object%5D&name=image.png&originHeight=214&originWidth=1434&originalType=binary&ratio=1&rotation=0&showTitle=false&size=103102&status=done&style=none&title=&width=932)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122157745.png)
 
 2. 将步骤1中的数值左移24位，得到：
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622793741925-715a38d5-fb1d-4ae3-9eb2-81c47f253ed3.png#crop=0&crop=0&crop=1&crop=1&height=140&id=u9d5ab67d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=224&originWidth=1436&originalType=binary&ratio=1&rotation=0&showTitle=false&size=140325&status=done&style=none&title=&width=895)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122157302.png)
 
 3. 右移8位：
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622793761452-1910483c-fbe6-4290-b552-5baf3c40e3da.png#crop=0&crop=0&crop=1&crop=1&height=109&id=u6323d267&margin=%5Bobject%20Object%5D&name=image.png&originHeight=162&originWidth=1350&originalType=binary&ratio=1&rotation=0&showTitle=false&size=99048&status=done&style=none&title=&width=907)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122158285.png)
 
 4. 添加机器标识: SID. id 表示配置在myid文件中的值，通常是整数1、2、3等,假设id为2：
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622793780930-6e46b3bf-fa85-4a42-91c9-fdadbedfce44.png#crop=0&crop=0&crop=1&crop=1&height=164&id=u6d38ac2e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=258&originWidth=1444&originalType=binary&ratio=1&rotation=0&showTitle=false&size=188377&status=done&style=none&title=&width=917)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122158613.png)
 
-5. 将步骤3和步骤4得到的两个64位表示的数值进行|操作：
+5. 将步骤3和步骤4得到的两个64位表示的数值进行`或`操作：
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622793797958-721685fe-1cc1-4bd1-a602-f955b00e89d4.png#crop=0&crop=0&crop=1&crop=1&height=223&id=u4996f915&margin=%5Bobject%20Object%5D&name=image.png&originHeight=340&originWidth=1362&originalType=binary&ratio=1&rotation=0&showTitle=false&size=198050&status=done&style=none&title=&width=895)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122158687.png)
 
 ```java
 public static long initializeNextSessionId(long id) {
@@ -52,7 +52,8 @@ public static long initializeNextSessionId(long id) {
 ZK主机启动时, 会把前 48位初始化好, 接下来每次有client链接到该host, 则后16位进行递增.
 
 ### 线上样例
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18490/1657161991424-3994764c-e26f-4aa7-93db-ef4c54dab820.png#clientId=u052136c1-b904-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=256&id=ubc34035b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=377&originWidth=2467&originalType=binary&ratio=1&rotation=0&showTitle=false&size=507743&status=done&style=none&taskId=u12675ed2-3c68-47ad-b2ec-35c6063c132&title=&width=1676)
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122158988.png)
 
 例如, sid = 0x3 518ae13bc4 16e8 本质上能拆分成:
 
@@ -76,12 +77,12 @@ ZK主机启动时, 会把前 48位初始化好, 接下来每次有client链接�
         1. 后续频繁创建session, 后16位满了, 变成 0x3 764c3db1d4 00e1
     3. 看代码: 无脑地对sid做+1操作. 即使这样, 也不太会导致 中间40位碰撞. (有这个可能, 例如当前session频繁创建, 变成了 0x3 ffffffffff 768e, 接下来服务器在 ffffffffff 这个毫秒点启动, 但当前session未失效, 重新连接上去了.  从而sid从 0x3 ffffffffff 0000开始递增, 有可能重新生成了一个 0x3 ffffffffff 768e 的sid)
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622800463036-c17d794f-2f80-4d68-9984-cc4a72aaf9e2.png#crop=0&crop=0&crop=1&crop=1&height=118&id=ud3234c1a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=118&originWidth=756&originalType=binary&ratio=1&rotation=0&showTitle=false&size=65422&status=done&style=none&title=&width=756)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122159565.png)
 
 
 ## Snowflake ID生成算法
 ### 概览
-### ![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622795783992-08e3ed09-7dce-4295-a5eb-36110189fb4b.png#crop=0&crop=0&crop=1&crop=1&height=307&id=u64e3b0bc&margin=%5Bobject%20Object%5D&name=image.png&originHeight=307&originWidth=792&originalType=binary&ratio=1&rotation=0&showTitle=false&size=57644&status=done&style=none&title=&width=792)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122159430.png)
 
 ### 分析
 
@@ -113,7 +114,7 @@ RocketMQ, 消息ID是使用snowflake算法生成, 是由客户端产生.
     1. 更好的方案, 当时间大于15ms时间我们通过**更换workid**来产生之前都没有产生过的来解决回拨问题。
     1. 最好的方案: 如下修改算法, 可以找2bit位作为时钟回拨位，发现有时钟回拨就将回拨位加1，达到最大位后再从0开始进行循环。
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1622797123714-eeb60553-7f53-4732-9b07-fd21e974b552.png#crop=0&crop=0&crop=1&crop=1&height=182&id=ubc4c2fcb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=253&originWidth=1280&originalType=binary&ratio=1&rotation=0&showTitle=false&size=201083&status=done&style=none&title=&width=920)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122159865.png)
 
 # 方案比较
 - zk的算法, 但单host增数量是65535, 适用于长连场景, 即session不会频繁创建, 从而导致后16位递增那么快.

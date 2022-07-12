@@ -8,7 +8,7 @@ lang: zh
 # 架构
 [https://prometheus.io/docs/introduction/faq/](https://prometheus.io/docs/introduction/faq/)
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1624887721086-a2f1f94c-2aae-4411-9115-6ec88216266e.png#align=left&display=inline&height=406&margin=%5Bobject%20Object%5D&name=image.png&originHeight=811&originWidth=1351&size=130294&status=done&style=none&width=675.5)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122209641.png)
 
 本质上是类似alimonitor的系统.
 # 几个细节:
@@ -82,7 +82,7 @@ prometheus_http_request_duration_seconds_bucket{handler="/",le="+Inf"} 28860
 
 
 ## 存储
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1624937750293-3b18399a-dca5-489e-a79c-e57a679867c0.png#align=left&display=inline&height=96&margin=%5Bobject%20Object%5D&name=image.png&originHeight=96&originWidth=695&size=12233&status=done&style=none&width=695)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122209523.png)
 
 
 
@@ -94,7 +94,7 @@ Observability的三大部分:
 | Tracing | ELK |  |
 | Logging |  |  |
 
-![image.png](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/18490/1624888180678-5feb535f-66dd-4e98-bebb-43694981f0c8.png#align=left&display=inline&height=256&margin=%5Bobject%20Object%5D&name=image.png&originHeight=400&originWidth=676&size=83578&status=done&style=none&width=432)
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207122210006.png)
 **
 
 - Metrics比较好理解, 核心可以分为如下几层: [https://codeascraft.com/2011/02/15/measure-anything-measure-everything/](https://codeascraft.com/2011/02/15/measure-anything-measure-everything/) metrics are structured by default

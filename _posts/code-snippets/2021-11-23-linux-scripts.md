@@ -128,6 +128,7 @@ ps aux | fgrep ${pid}
 
 ## 用户管理
 * 锁定用户:
+
 ```shell
 sudo passwd -l username
 ```
