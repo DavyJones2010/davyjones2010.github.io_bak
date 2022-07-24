@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ZK理解再深入-SID/ZXID与snowflake算法
+title: 由ZK的SID/ZXID与snowflake算法引发的ID生成算法探讨
 tags: [distributed-system, uuid, snowflake, zookeeper, sid]
 lang: zh
 ---
@@ -200,6 +200,66 @@ public static long getWorkerId(long datacenterId, long maxWorkerId) {
     return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
 }
 ```
+
+## aws中资源ID生成算法
+
+### 方案1: Base36
+代码如下, 优点是不需要占位符, 可以直接用`ALPHABET`甚至可以修改`ALPHABET`的顺序达到简单加密的效果.
+```java
+public class Base36Test {
+
+    // 26小写+26大写+10数字=62
+    //public static String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    // 26小写+10数字=36
+    public static String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    private static String encoding(long num) {
+        if (num < 1) {throw new IllegalArgumentException("num must be greater than 0.");}
+
+        StringBuilder sb = new StringBuilder();
+        for (; num > 0; num /= 36) {
+            sb.append(ALPHABET.charAt((int)(num % 36)));
+        }
+
+        return sb.toString();
+    }
+
+    private static long decoding(String str) {
+        if (str == null || str.trim().length() == 0) {
+            throw new IllegalArgumentException("str must not be empty.");
+        }
+
+        long result = 0;
+        for (int i = 0; i < str.length(); i++) {
+            result += ALPHABET.indexOf(str.charAt(i)) * Math.pow(36, i);
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int dcId = 1;
+        int izId = 1;
+
+        long l = System.currentTimeMillis();
+        String encoding = Base36Test.encoding(l);
+        System.out.println(encoding);
+        //int idx = (int)(Math.random() * 1024);
+        int idx = 1;
+        encoding = Base36Test.encoding(idx);
+        System.out.println(encoding);
+
+        encoding = Base36Test.encoding(1023);
+        System.out.println(encoding);
+        encoding = Base36Test.encoding(1024);
+        System.out.println(encoding);
+    }
+}
+```
+
+### 方案2: Base64
+缺点是会有`=`占位符.
+
 
 # 时钟回拨问题
 
