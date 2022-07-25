@@ -14,22 +14,88 @@ lang: zh
 # GitHub访问几种方式
 
 ## 方案1: SSH方式
+
+### 配置方式
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242155452.png)
+
 这种方式, 可以通过配置SSH免登即可.
 
-## 方案2: HTTPS方式
-![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242155904.png)
-这种方式, 即背景中的案例, 必须通过 用户名+Token方式 登录.
-![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242158549.png)
-搜索了下, **从2021年8月13日开始, GitHub已经禁止了 用户名+密码方式 登录**
-> From August 13, 2021, 
-> GitHub is no longer accepting account passwords when authenticating Git operations. 
-> You need to add a PAT (Personal Access Token) instead, 
-> and you can follow the below method to add a PAT on your system.
+### 如何支持不同Host采用不同SSHKey?
+如果在本地, 既需要配置gitee的SSH免登, 又需要配置github的SSH免登, 有需要配置其他Host的SSH免登, 怎么能让不同的Host使用不同的公私钥对?
 
+- 配置样例如下: 
+
+```shell
+vim ~/.ssh/config
+```
+
+```shell
+-- 为 git@gitee.com:/xxx ssh地址配置
+Host gitee.com
+  HostName gitee.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_rsa
+
+-- 为 git@github.com:xxx/xxx ssh地址配置
+Host github.com
+  HostName github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+
+-- 其他地址默认ssh地址配置
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+- 验证是否配置正确:
+
+```shell
+[davywalker@davywalkers-MacBook-Pro ~]$ ssh git@github.com
+PTY allocation request failed on channel 1
+Hi DavyJones2010! You've successfully authenticated, but GitHub does not provide shell access.
+Connection to github.com closed.
+```
+
+
+## 方案2: HTTPS方式
+
+### 配置方式
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242155904.png)
+
+这种方式, 即背景中的案例, 必须通过 用户名+Token方式 登录, 即CLI中密码字段, 不要输入账号的密码, 而是输入Token
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242158549.png)
+
+搜索了下, **从2021年8月13日开始, GitHub已经禁止了 用户名+密码方式 登录**
+> From August 13, 2021, <br/>
+> GitHub is no longer accepting account passwords when authenticating Git operations. <br/>
+> You need to add a PAT (Personal Access Token) instead, <br/>
+> and you can follow the below method to add a PAT on your system. <br/>
+
+### GitHub密码存储位置
+在使用SourceTree的时候, 由于repo使用的也是HTTPS, 因此也提示输入 用户名+密码, 由于密码方式被禁用, 因此后续再push这个repo, 会一直报禁止密码登录错误.
+但也<mark>找不到修改/删除该密码的位置.</mark>
+
+查了下资料, 不同的操作系统, 甚至同样操作系统的不同的版本, 存储方式都不同. 这里以 [MacOS Monterey 12.3.1版本](https://stackoverflow.com/questions/42584934/where-is-my-remote-git-repository-password-stored-on-the-local-machine) 为例:
+
+```shell
+davywalkerdeMacBook-Pro:~ davywalker$ git config credential.helper
+osxkeychain
+```
+可以看出来是由keychain进行的管理, 在Mac的 `Applications -> Utilties -> Keychain Access` 
+
+![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207252101640.png)
+
+- 可以看到SourceTree应用保存的GitHub Repo密码.
+- 同时也可以看到IntelliJ IDEA保存的GitHub Repo密码, 通过显示repo密码发现, 这个密码字段其实就是签发给Intellij的 PAT(Personal Access Token)
 
 ## 总结
 由于<font color='red'>本地配置的remote repo是HTTPS方式, 因此通过配置SSH免登方式必然是无效的.</font> 
+
 ![](https://davywalker-bucket.oss-cn-shanghai.aliyuncs.com/img/202207242202265.png)
 
 # 登录安全思考
